@@ -1,0 +1,116 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:1:1-38:12
+	package
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:2:5-29
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:4:5-30
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:3:5-28
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:6:5-67
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:6:22-64
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:7:5-77
+MERGED from [com.facebook.react:react-native:0.50.4] /home/ninjacoder-69/.android/build-cache/157a9f780cd3c5c9a44c5cd7b06e955f630e185e/output/AndroidManifest.xml:11:5-78
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:7:22-75
+uses-sdk
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:9:5-11:41
+MERGED from [com.facebook.react:react-native:0.50.4] /home/ninjacoder-69/.android/build-cache/157a9f780cd3c5c9a44c5cd7b06e955f630e185e/output/AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:appcompat-v7:23.0.1] /home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:23.0.1] /home/ninjacoder-69/.android/build-cache/4839943b2779a42941aa14f9d8b02482e9ae783b/output/AndroidManifest.xml:20:5-43
+MERGED from [com.facebook.fbui.textlayoutbuilder:textlayoutbuilder:1.0.0] /home/ninjacoder-69/.android/build-cache/2b30629dfdd35782fc5834c90bce835393a67220/output/AndroidManifest.xml:14:5-16:41
+MERGED from [com.facebook.fresco:fresco:1.3.0] /home/ninjacoder-69/.android/build-cache/90da35c34f780bbb6a88e5a9c4fd9f09e9e84663/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:drawee:1.3.0] /home/ninjacoder-69/.android/build-cache/2e0522fbed2dd4d3a9795a101203129efb0311a4/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.3.0] /home/ninjacoder-69/.android/build-cache/fba17c1135320a34a81ac50bf72a84615eefdc8d/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline:1.3.0] /home/ninjacoder-69/.android/build-cache/d78f2edda3cd4cc82cc03448a5793ca6569eb6d7/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-base:1.3.0] /home/ninjacoder-69/.android/build-cache/2f38c2cbf0c8ff8e16d872acb08e80bdc4a978cb/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:1.3.0] /home/ninjacoder-69/.android/build-cache/e82541cb2cd27ccafe9843370469a19fa919ad1e/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.soloader:soloader:0.1.0] /home/ninjacoder-69/.android/build-cache/db920ba46adebbec5b7a012c00638b30f7a09268/output/AndroidManifest.xml:2:3-70
+	android:targetSdkVersion
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:11:9-38
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:10:9-35
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml
+application
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:13:5-36:19
+MERGED from [com.facebook.react:react-native:0.50.4] /home/ninjacoder-69/.android/build-cache/157a9f780cd3c5c9a44c5cd7b06e955f630e185e/output/AndroidManifest.xml:13:5-20
+MERGED from [com.android.support:appcompat-v7:23.0.1] /home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:23.0.1] /home/ninjacoder-69/.android/build-cache/4839943b2779a42941aa14f9d8b02482e9ae783b/output/AndroidManifest.xml:22:5-20
+MERGED from [com.facebook.soloader:soloader:0.1.0] /home/ninjacoder-69/.android/build-cache/db920ba46adebbec5b7a012c00638b30f7a09268/output/AndroidManifest.xml:3:3-17
+MERGED from [org.webkit:android-jsc:r174650] /home/ninjacoder-69/.android/build-cache/7528ad36bb8574e57e17caefdfb72d0e6b9df8fc/output/AndroidManifest.xml:2:3-17
+	android:label
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:16:7-39
+	android:allowBackup
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:15:7-33
+	android:icon
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:17:7-41
+	android:theme
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:18:7-38
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:14:7-38
+activity#com.kindesdkrn.MainActivity
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:19:7-34:18
+	android:label
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:21:9-41
+	android:windowSoftInputMode
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:23:9-51
+	android:configChanges
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:22:9-79
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:20:9-37
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:24:9-27:25
+action#android.intent.action.MAIN
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:25:13-65
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:25:21-62
+category#android.intent.category.LAUNCHER
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:26:13-73
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:26:23-70
+intent-filter#android.intent.action.VIEW+android.intent.category.BROWSABLE+android.intent.category.DEFAULT
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:28:11-33:27
+	android:label
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:28:26-58
+action#android.intent.action.VIEW
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:29:15-67
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:29:23-64
+category#android.intent.category.DEFAULT
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:30:15-74
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:30:25-71
+category#android.intent.category.BROWSABLE
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:31:15-76
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:31:25-73
+data
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:32:15-74
+	android:host
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:32:42-72
+	android:scheme
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:32:21-41
+activity#com.facebook.react.devsupport.DevSettingsActivity
+ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:35:7-84
+	android:name
+		ADDED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:35:17-81
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+IMPLIED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:1:1-38:12 reason: org.webkit.android_jsc has a targetSdkVersion < 4
+uses-permission#android.permission.READ_PHONE_STATE
+IMPLIED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:1:1-38:12 reason: org.webkit.android_jsc has a targetSdkVersion < 4
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+IMPLIED from /home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/src/main/AndroidManifest.xml:1:1-38:12 reason: org.webkit.android_jsc requested WRITE_EXTERNAL_STORAGE

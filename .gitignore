@@ -1,0 +1,87 @@
+.mvn/.gradle-enterprise/
+.scannerwork/
+.vscode
+*.iml
+out/
+*.ipr
+*.iws
+*.gpg
+classpath.txt
+version.properties
+modules/openapi-generator-gradle-plugin/bin/
+!modules/openapi-generator-cli/src/main/resources/version.properties
+.project
+.classpath
+lib/*
+build/*
+generated-files/*
+generated-sources/*
+generated-code/*
+*.swp
+*.swo
+target
+.idea
+.lib
+atlassian-ide-plugin.xml
+.DS_Store
+packages/
+.pub
+.packages
+.vagrant/
+.vscode/
+**/.vs
+.factorypath
+.metals/*
+
+.settings
+
+*.mustache~
+*.java~
+*.pm~
+*.xml~
+*.t~
+
+/target
+/generated-files
+test-output/
+nbactions.xml
+test-output/
+
+# nodejs
+**/node_modules
+
+#Java/Android
+**/.gradle
+
+# C#
+*.csproj.user
+
+*.pyc
+__pycache__
+
+effective.pom
+
+# haskell
+.stack-work
+.cabal-sandbox
+cabal.project.local
+
+# R
+.Rproj.user
+
+# Dart
+**/dart*/**/.dart_tool
+**/dart*/**/.packages
+**/dart*/**/pubspec.lock
+# Dart dio
+**/dart*/**/*.g.dart
+
+generators/**/target
+out/
+
+# PHP
+samples/php/vendor
+samples/php/logs/app.log
+
+# React Native
+samples/react-native/node_modules

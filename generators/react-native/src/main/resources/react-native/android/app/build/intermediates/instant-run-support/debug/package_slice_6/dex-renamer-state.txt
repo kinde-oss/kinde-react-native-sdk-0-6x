@@ -1,0 +1,4 @@
+#Fri Oct 07 10:37:00 ICT 2022
+base.0=/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_6
+renamed.0=classes.dex
+file.0=/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_6/classes.dex

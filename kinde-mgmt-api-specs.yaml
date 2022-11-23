@@ -1,0 +1,88 @@
+openapi: "3.0.0"
+info:
+  version: 0.2.1
+  title: Kinde Management API
+  description: Provides endpoints to manage your Kinde Businesses
+  termsOfService: https://kinde.com/docs/looking-after-you/terms-of-service
+  contact:
+    name: Kinde Support Team
+    email: support@kinde.com
+    url: https://kinde.com/docs
+servers:
+  - url: https://{businessName}.kinde.com
+    variables:
+      businessName:
+        description: Business Name created in the Kinde Console
+        default: app
+tags:
+  - name: Users
+    description: Everything about your end-users
+paths:
+  /oauth2/user_profile:
+    get:
+      tags:
+        - User
+      operationId: getUserProfile
+      description: |
+        Test
+      summary: Returns current user profile
+      responses:
+        "200":
+          description: A successful response with a list of users or an empty list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_profile"
+        "403":
+          description: Invalid credentials
+      security:
+        - oauth:
+            - 'offline'
+            - 'openid'
+components:
+  schemas:
+    users:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/user"
+        next_token:
+          type: string
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        full_name:
+          type: string
+        last_name:
+          type: string
+        first_name:
+          type: string
+        is_suspended:
+          type: boolean
+    user_profile:
+      type: object
+      properties:
+        id:
+          type: string
+        preferred_email:
+          type: string
+        last_name:
+          type: string
+        first_name:
+          type: string
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: '/oauth2/auth'
+          tokenUrl: '/oauth2/token'
+          scopes:
+            'offline': 'offline'
+            'openid': 'openid'

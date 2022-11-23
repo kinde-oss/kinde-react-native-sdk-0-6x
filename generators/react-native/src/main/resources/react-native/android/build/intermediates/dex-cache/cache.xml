@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/2e0522fbed2dd4d3a9795a101203129efb0311a4/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c65a2e39d54023bac3aef64a2f0cff89289c7ff6">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_16892eea0654c6afaa24840b124310ccfb19ed04.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/d78f2edda3cd4cc82cc03448a5793ca6569eb6d7/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="48c7f54c2515a2312d3a4481d10c43fbb807f3af">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_20f67516a6a42af764f7659ca88ee34563b8e84d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/4839943b2779a42941aa14f9d8b02482e9ae783b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_6e8e0a0b2af65bd15b37c8ae329df38e73dbdf05.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/2f38c2cbf0c8ff8e16d872acb08e80bdc4a978cb/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="72128af126ddd7d6252da9357fe560d3abcdfb0c">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_1073684e28ffc4c5f23958cbecd57b96508777cc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/eaf4d32cb58dc37695fc4e4eee611ac93d35e20b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f768861356f4cd8613da447181fd15c3f584f52d">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_454b1a2cf8047f726c086d7236ad6c52adeee19a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_9cd3e3e40a4d9b6afee0b6031730fcf5c293bc05.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-tasks/1.4.0/d85884acf6810a3bbbecb587f239005cbc846dc4/bolts-tasks-1.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/bolts-tasks-1.4.0_ac3faa6dc7e90bc6479327b1cf3c3ea6796bc293.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.0/5871fb60dc68d67da54a663c3fd636a10a532948/jsr305-3.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/jsr305-3.0.0_2a3452012d303f93681a3ccdbec2f3d7c89e4b0a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/javax.inject-1_a1366868ad92681d1ea8a84b8c24d874903f9298.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/fba17c1135320a34a81ac50bf72a84615eefdc8d/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c03c08c9934b23c8c09c803345ec51a74119127b">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_8cbe4f79cba91be12ce4ee629274c49ad77218ac.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/e82541cb2cd27ccafe9843370469a19fa919ad1e/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="37345de2ed2772f385eaeec37a9c2ff0fea99ad7">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_8e506a231d9da38d24743f143e0cfe6338c96390.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.1_e93491708716f33f96523ec174c6e7f4dbc143ec.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.6.0/69edde9fc4b01c9fd51d25b83428837478c27254/okhttp-3.6.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="69edde9fc4b01c9fd51d25b83428837478c27254">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/okhttp-3.6.0_ba2b9fab9f89c4e753f382366a1eea5b5add9b72.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/eaf4d32cb58dc37695fc4e4eee611ac93d35e20b/output/jars/libs/infer-annotations-4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="9809e90be788acdb479b2b44e2112f3295a03068">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/infer-annotations-4.0_865964265d636b454cb5e81538f72cd4316f9aa5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/90da35c34f780bbb6a88e5a9c4fd9f09e9e84663/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="fe85b87215e405f5917d40ae4960488ac9224b74">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_ad2c4efe121dab5434d85e7609a38ccc7a64253e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/4839943b2779a42941aa14f9d8b02482e9ae783b/output/jars/libs/internal_impl-23.0.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1_18f1e7e1e7ef152ab1ff9a2858748242353b0a77.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/db920ba46adebbec5b7a012c00638b30f7a09268/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8f615bca00639150c9eb6175d4b5471193f70794">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_96ae770548028921f67dfca6696c3ae2e4a77bca.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.facebook.fbui.textlayoutbuilder/staticlayout-proxy/1.0/f162442a19fff13995fbd51ba414d9ee05579080/staticlayout-proxy-1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f162442a19fff13995fbd51ba414d9ee05579080">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/staticlayout-proxy-1.0_a0da29ec3aa4a8947fadc38860310b56502952d7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.android/build-cache/2b30629dfdd35782fc5834c90bce835393a67220/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f90b593491e4044903f0bbf68dc3fa2790b151b9">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/classes_99a6cb9c93a7f4074fbe10c498c01e1d9a454a71.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-urlconnection/3.6.0/3f9b16b774f2c36cfd86dd2053d0b3059531dacc/okhttp-urlconnection-3.6.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3f9b16b774f2c36cfd86dd2053d0b3059531dacc">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-3.6.0_8e6d05f494cff6f9bfea4e3269342cf4bc4c0158.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ninjacoder-69/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.13.0/a9283170b7305c8d92d25aff02a6ab7e45d06cbe/okio-1.13.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="a9283170b7305c8d92d25aff02a6ab7e45d06cbe">
+        <dex dex="/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/pre-dexed/debug/okio-1.13.0_46ce0101536c70e3b34d51035f1af5c1f74a06d4.jar" />
+    </item>
+
+</items>

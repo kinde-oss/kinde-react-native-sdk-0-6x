@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_primary_text_disable_only_material_light.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_search_url_text.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_search_url_text.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_secondary_text_material_light.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/switch_thumb_material_dark.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/switch_thumb_material_dark.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_primary_text_disable_only_material_dark.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_primary_text_material_dark.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/switch_thumb_material_light.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_secondary_text_material_dark.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_secondary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/ninjacoder-69/works/react-native/KindeSDKRN/android/app/build/intermediates/res/merged/debug/color/abc_primary_text_material_light.xml",
+        "source": "/home/ninjacoder-69/.android/build-cache/a71563e2208ac5373c3c731f68ace5ff17691284/output/res/color/abc_primary_text_material_light.xml"
+    }
+]
