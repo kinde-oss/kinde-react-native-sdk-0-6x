@@ -296,11 +296,11 @@ To access the user information, use the `OAuthApi`, `ApiClient` classes exported
 
 ```javascript
 ...
-import { ..., OAuthApi, Configuration, ... } from '@kinde-oss/react-native-sdk';
+import { ..., OAuthApi, ApiClient, ... } from '@kinde-oss/react-native-sdk';
 ...
 
 const getUserProfile = () => {
-  const config = new Configuration({
+  const config = new ApiClient.Configuration({
     basePath: KINDE_ISSUER_URL,
   });
   const apiInstance = new OAuthApi(config)

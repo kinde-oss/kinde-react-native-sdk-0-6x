@@ -1,6 +1,5 @@
 // @ts-nocheck
-const { KindeSDK, Configuration, OAuthApi } = require(process.cwd() +
-    '/src/index');
+const { KindeSDK, ApiClient, OAuthApi } = require(process.cwd() + '/src/index');
 import { Linking } from 'react-native';
 import Url from 'url-parse';
 import BaseStore from '../src/SDK/Storage/Base';
@@ -216,7 +215,7 @@ describe('KindeSDK', () => {
     });
     describe('Api', () => {
         test('Get user profile', async () => {
-            const config = new Configuration({
+            const config = new ApiClient.Configuration({
                 basePath: configuration.issuer
             });
             const apiInstance = new OAuthApi(config);
