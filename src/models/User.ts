@@ -1,3 +1,5 @@
+/* tslint:disable */
+/* eslint-disable */
 /**
  * Kinde Management API
  * Provides endpoints to manage your Kinde Businesses

@@ -1,5 +1,6 @@
 // @ts-nocheck
-const { KindeSDK, UserApi } = require(process.cwd() + '/src/index');
+const { KindeSDK, Configuration, OAuthApi } = require(process.cwd() +
+    '/src/index');
 import { Linking } from 'react-native';
 import Url from 'url-parse';
 import BaseStore from '../src/SDK/Storage/Base';
@@ -29,7 +30,7 @@ const configuration = {
     redirectUri: 'myapp://myhost.kinde.com/kinde_callback',
     clientId: 'test@live',
     logoutRedirectUri: 'myapp://myhost.kinde.com/kinde_callback',
-    scope: 'openid offline',
+    scope: 'openid profile email offline',
     authorizationEndpoint: 'https://myhost.kinde.com/oauth2/auth',
     tokenEndpoint: 'https://myhost.kinde.com/oauth2/token',
     logoutEndpoint: 'https://myhost.kinde.com/logout',
@@ -215,8 +216,10 @@ describe('KindeSDK', () => {
     });
     describe('Api', () => {
         test('Get user profile', async () => {
-            const apiClient = new ApiClient(configuration.issuer);
-            const apiInstance = new OAuthApi(apiClient);
+            const config = new Configuration({
+                basePath: configuration.issuer
+            });
+            const apiInstance = new OAuthApi(config);
             jest.spyOn(apiInstance, 'getUserProfileV2').mockImplementation(
                 () => {
                     return {
