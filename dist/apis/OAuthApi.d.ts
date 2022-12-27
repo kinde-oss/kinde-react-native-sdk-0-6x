@@ -11,7 +11,7 @@
  *
  */
 /// <reference types="react-native" />
-import * as runtime from '../ApiClient';
+import * as runtime from '../runtime';
 import type { UserProfile, UserProfileV2 } from '../models';
 /**
  *

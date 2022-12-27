@@ -11,7 +11,7 @@
  *
  */
 /// <reference types="react-native" />
-import * as runtime from '../ApiClient';
+import * as runtime from '../runtime';
 import type { CreateUser200Response, CreateUserRequest, GetUsers200Response } from '../models';
 export interface CreateUserOperationRequest {
     createUserRequest?: CreateUserRequest;

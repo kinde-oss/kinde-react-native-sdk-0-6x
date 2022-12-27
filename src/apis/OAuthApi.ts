@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * Kinde Management API
  * Provides endpoints to manage your Kinde Businesses
@@ -13,7 +11,7 @@
  *
  */
 
-import * as runtime from '../runtime';
+import * as runtime from '../ApiClient';
 import type { UserProfile, UserProfileV2 } from '../models';
 import {
     UserProfileFromJSON,

@@ -10,7 +10,7 @@ For more information, please visit [https://kinde.com/docs](https://kinde.com/do
 
 ## Support versions
 
-We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-lt-0-6](https://github.com/kinde-oss/react-native-sdk-lt-0-6)
+We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-0-5x](https://github.com/kinde-oss/react-native-sdk-0-5x)
 
 ## Installing dependencies
 
