@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.AdditionalParametersAllow=void 0;var AdditionalParametersAllow={audience:'',is_create_org:true,org_code:'',org_name:''};exports.AdditionalParametersAllow=AdditionalParametersAllow;

@@ -27,7 +27,7 @@ global.FormData = FormDataMock;
 const configuration = {
     issuer: 'https://myhost.kinde.com',
     redirectUri: 'myapp://myhost.kinde.com/kinde_callback',
-    clientId: 'spa@live',
+    clientId: 'test@live',
     logoutRedirectUri: 'myapp://myhost.kinde.com/kinde_callback',
     scope: 'openid offline',
     authorizationEndpoint: 'https://myhost.kinde.com/oauth2/auth',
@@ -45,6 +45,15 @@ const fakeUserProfile = {
     provided_id: null,
     preferred_email: 'usertesting@yopmail.com'
 };
+
+const fakePayloadFromDecodeToken = {
+    azp: 'test@live',
+    iss: 'https://myhost.kinde.com',
+    org_code: 'org_e5f28e1676d',
+    org_codes: ['org_e5f28e1676d'],
+    permissions: ['read:profile', 'read:email']
+};
+
 jest.mock('Linking', () => ({
     openURL: jest.fn(),
     addEventListener: jest.fn(),
@@ -65,10 +74,31 @@ jest.mock(process.cwd() + '/src/SDK/Utils', () => ({
             throw new Error(`${name} cannot be empty`);
         }
         return reference;
-    })
+    }),
+    checkAdditionalParameters: jest.fn(),
+    addAdditionalParameters: jest.fn()
 }));
 
+jest.mock('jwt-decode', () =>
+    jest.fn().mockReturnValue({
+        azp: 'test@live',
+        iss: 'https://myhost.kinde.com',
+        org_code: 'org_e5f28e1676d',
+        org_codes: ['org_e5f28e1676d'],
+        permissions: ['read:profile', 'read:email']
+    })
+);
+
+let globalClient;
 describe('KindeSDK', () => {
+    beforeAll(() => {
+        globalClient = new KindeSDK(
+            configuration.issuer,
+            configuration.redirectUri,
+            configuration.clientId,
+            configuration.logoutRedirectUri
+        );
+    });
     beforeEach(() => {
         fetch.mockClear();
     });
@@ -78,25 +108,16 @@ describe('KindeSDK', () => {
                 new KindeSDK();
             }).toThrow('Issuer cannot be empty');
         });
-
         test('throws an error when redirectUrl is not passed', () => {
             expect(() => {
                 new KindeSDK(configuration.issuer);
             }).toThrow('Redirect URI cannot be empty');
         });
-
         test('throws an error when Client ID is not passed', () => {
             expect(() => {
                 new KindeSDK(configuration.issuer, configuration.redirectUri);
             }).toThrow('Client Id cannot be empty');
         });
-
-        test('throws an error when Client ID is not passed', () => {
-            expect(() => {
-                new KindeSDK(configuration.issuer, configuration.redirectUri);
-            }).toThrow('Client Id cannot be empty');
-        });
-
         test('throws an error when logoutRedirectUri is not passed', () => {
             expect(() => {
                 new KindeSDK(
@@ -106,48 +127,25 @@ describe('KindeSDK', () => {
                 );
             }).toThrow('Logout Redirect URI');
         });
-
         test('Matching authorizationEndpoint', () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            expect(client.authorizationEndpoint).toBe(
+            expect(globalClient.authorizationEndpoint).toBe(
                 configuration.authorizationEndpoint
             );
         });
-
         test('Matching tokenEndpoint', () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
+            expect(globalClient.tokenEndpoint).toBe(
+                configuration.tokenEndpoint
             );
-            expect(client.tokenEndpoint).toBe(configuration.tokenEndpoint);
         });
-
         test('Matching logoutEndpoint', () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
+            expect(globalClient.logoutEndpoint).toBe(
+                configuration.logoutEndpoint
             );
-            expect(client.logoutEndpoint).toBe(configuration.logoutEndpoint);
         });
     });
     describe('Redirect', () => {
         test('Open authenticate endpoint', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            await client.login();
+            await globalClient.login();
             const URLParsed = Url(`${configuration.issuer}/oauth2/auth`, true);
             URLParsed.query['client_id'] = configuration.clientId;
             URLParsed.query['redirect_uri'] = configuration.redirectUri;
@@ -162,13 +160,7 @@ describe('KindeSDK', () => {
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
         test('Open registration endpoint', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            await client.register();
+            await globalClient.register();
             const URLParsed = Url(configuration.authorizationEndpoint, true);
             URLParsed.query['client_id'] = configuration.clientId;
             URLParsed.query['redirect_uri'] = configuration.redirectUri;
@@ -183,13 +175,7 @@ describe('KindeSDK', () => {
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
         test('Logout', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            await client.logout();
+            await globalClient.logout();
             const URLParsed = Url(configuration.logoutEndpoint, true);
             URLParsed.query['redirect'] = configuration.logoutRedirectUri;
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
@@ -197,50 +183,25 @@ describe('KindeSDK', () => {
     });
     describe('Token', () => {
         test('throws an error when url is not passed', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
+            expect(() => globalClient.getToken()).toThrow(
+                'URL cannot be empty'
             );
-            await expect(client.getToken()).rejects.toThrow(Error);
         });
         test('throws an error when missing code in query', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            await expect(
-                client.getToken(configuration.redirectUri)
-            ).rejects.toThrow(Error);
+            expect(() =>
+                globalClient.getToken(configuration.redirectUri)
+            ).toThrow('code cannot be empty');
         });
         test('throws an error when have error from callback', async () => {
-            expect.assertions(1);
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            try {
-                await client.getToken(
+            expect(() =>
+                globalClient.getToken(
                     `${configuration.redirectUri}?code=random_code&error=invalid`
-                );
-            } catch (error) {
-                expect(error).toMatch('invalid');
-            }
+                )
+            ).toThrow(Error);
         });
         test('Get Token instance', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            await client.login();
-            const token = await client.getToken(
+            await globalClient.login();
+            const token = await globalClient.getToken(
                 `${configuration.redirectUri}?code=random_code`
             );
             expect(token).toEqual({
@@ -252,21 +213,63 @@ describe('KindeSDK', () => {
             expect(fetch).toHaveBeenCalledTimes(1);
         });
     });
-    describe('User Profile', () => {
-        test('Get User Profile', async () => {
-            const apiInstance = new UserApi({
-                basePath: configuration.issuer
+    describe('Api', () => {
+        test('Get user profile', async () => {
+            const apiClient = new ApiClient(configuration.issuer);
+            const apiInstance = new OAuthApi(apiClient);
+            jest.spyOn(apiInstance, 'getUserProfileV2').mockImplementation(
+                () => {
+                    return {
+                        id: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
+                        last_name: 'test',
+                        first_name: 'user',
+                        provided_id: null,
+                        preferred_email: 'usertesting@yopmail.com'
+                    };
+                }
+            );
+            const data = await apiInstance.getUserProfileV2();
+            await expect(data).toEqual(fakeUserProfile);
+        });
+    });
+    describe('Payload', () => {
+        test('Get claim via access token', () => {
+            expect(globalClient.getClaim('iss')).toBe(
+                fakePayloadFromDecodeToken.iss
+            );
+        });
+        test('Get claim via id token', () => {
+            expect(globalClient.getClaim('azp', 'id_token')).toBe(
+                fakePayloadFromDecodeToken.azp
+            );
+        });
+        test('Get permissions', () => {
+            expect(globalClient.getPermissions()).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                permissions: fakePayloadFromDecodeToken.permissions
             });
-            jest.spyOn(apiInstance, 'getUserProfile').mockImplementation(() => {
-                return {
-                    id: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
-                    last_name: 'test',
-                    first_name: 'user',
-                    provided_id: null,
-                    preferred_email: 'usertesting@yopmail.com'
-                };
+        });
+        test('Get existed permission', () => {
+            expect(globalClient.getPermission('read:profile')).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                isGranted: true
             });
-            expect(apiInstance.getUserProfile()).toEqual(fakeUserProfile);
+        });
+        test('Get non-existed permission', () => {
+            expect(globalClient.getPermission('write:profile')).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                isGranted: false
+            });
+        });
+        test('Get organization', () => {
+            expect(globalClient.getOrganization()).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code
+            });
+        });
+        test('Get organizations', () => {
+            expect(globalClient.getUserOrganizations()).toEqual({
+                orgCodes: fakePayloadFromDecodeToken.org_codes
+            });
         });
     });
 });

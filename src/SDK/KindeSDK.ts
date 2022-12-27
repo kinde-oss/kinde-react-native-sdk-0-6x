@@ -1,10 +1,13 @@
-import { checkNotNull } from './Utils';
-import Url from 'url-parse';
+import jwt_decode from 'jwt-decode';
 import { Linking } from 'react-native';
+import Url from 'url-parse';
+import { UnAuthenticatedException } from '../common/exceptions/unauthenticated.exception';
+import { UnexpectedException } from '../common/exceptions/unexpected.exception';
+import { AdditionalParameters, TokenID, TokenType } from '../types/KindeSDK';
+import { AuthStatus } from './Enums/AuthStatus.enum';
 import AuthorizationCode from './OAuth/AuthorizationCode';
 import { sessionStorage } from './Storage';
-import { AuthStatus } from './Enums/AuthStatus.enum';
-import { UnAuthenticatedException } from '../common/exceptions/unauthenticated.exception';
+import { checkAdditionalParameters, checkNotNull } from './Utils';
 
 class KindeSDK {
     public issuer: string;
@@ -13,24 +16,27 @@ class KindeSDK {
     public logoutRedirectUri: string;
     public scope: string;
     public clientSecret?: string;
+    public additionalParameters: AdditionalParameters;
     public authStatus: AuthStatus;
 
     /**
-     * The constructor function takes in the issuer, redirectUri, clientId, logoutRedirectUri, and
-     * scope as parameters
+     * The constructor function takes in a bunch of parameters and sets them to the class properties
      * @param {string} issuer - The URL of the OIDC provider.
-     * @param {string} redirectUri - The URL that the OIDC provider will redirect to after the user has
+     * @param {string} redirectUri - The URI that the OIDC provider will redirect to after the user has
      * logged in.
      * @param {string} clientId - The client ID of your application.
-     * @param {string} logoutRedirectUri - The URI to redirect to after logout.
-     * @param {string} [scope=openid offline] - The scope of the access request.
+     * @param {string} logoutRedirectUri - The URL to redirect to after logout.
+     * @param {string} [scope=openid profile email offline] - The scope of the authentication. This is
+     * a space-separated list of scopes.
+     * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
      */
     constructor(
         issuer: string,
         redirectUri: string,
         clientId: string,
         logoutRedirectUri: string,
-        scope: string = 'openid offline'
+        scope: string = 'openid profile email offline',
+        additionalParameters: AdditionalParameters = {}
     ) {
         this.issuer = issuer;
         checkNotNull(this.issuer, 'Issuer');
@@ -44,6 +50,9 @@ class KindeSDK {
         this.logoutRedirectUri = logoutRedirectUri;
         checkNotNull(this.logoutRedirectUri, 'Logout Redirect URI');
 
+        this.additionalParameters =
+            checkAdditionalParameters(additionalParameters);
+
         this.scope = scope;
 
         this.clientSecret = '';
@@ -51,14 +60,22 @@ class KindeSDK {
     }
 
     /**
-     * The function calls the login function of the AuthorizationCode class
-     * @returns A promise that resolves to a void.
+     * The function takes an object as an argument, and if the object is empty, it will use the default
+     * object
+     * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+     * @returns A promise that resolves to void.
      */
-    async login(): Promise<void> {
+    login(additionalParameters: AdditionalParameters = {}): Promise<void> {
+        checkAdditionalParameters(additionalParameters);
         this.cleanUp();
         const auth = new AuthorizationCode();
         this.updateAuthStatus(AuthStatus.AUTHENTICATING);
-        return auth.login(this, true);
+
+        const additionalParametersMerged = {
+            ...this.additionalParameters,
+            ...additionalParameters
+        };
+        return auth.login(this, true, 'login', additionalParametersMerged);
     }
 
     /**
@@ -68,59 +85,60 @@ class KindeSDK {
      * @returns A promise that resolves to the response from the token endpoint.
      */
     getToken(url: string): Promise<void> {
+        if (this.checkIsUnAuthenticated()) {
+            throw new UnAuthenticatedException();
+        }
+        checkNotNull(url, 'URL');
+
+        const URLParsed = Url(url, true);
+        const { code, error, error_description } = URLParsed.query;
+        if (error) {
+            const msg = error_description ?? error;
+            throw new UnAuthenticatedException(msg);
+        }
+        checkNotNull(code, 'code');
+
+        const formData = new FormData();
+        formData.append('code', code);
+        formData.append('client_id', this.clientId);
+        formData.append('client_secret', this.clientSecret);
+        formData.append('grant_type', 'authorization_code');
+        formData.append('redirect_uri', this.redirectUri);
+
+        const state = sessionStorage.getState();
+        if (state) {
+            formData.append('state', state);
+        }
+        const codeVerifier = sessionStorage.getCodeVerifier();
+        if (codeVerifier) {
+            formData.append('code_verifier', codeVerifier);
+        }
+
         return new Promise(async (resolve, reject) => {
-            try {
-                if (this.checkIsUnAuthenticated()) {
-                    reject(new UnAuthenticatedException());
-                }
-                checkNotNull(url, 'URL');
-                const URLParsed = Url(url, true);
-                const { code, error, error_description } = URLParsed.query;
-                checkNotNull(code, 'code');
-                if (error) {
-                    const msg = error_description ?? error;
-                    reject(msg);
-                }
-                const formData = new FormData();
-                formData.append('code', code);
-                formData.append('client_id', this.clientId);
-                formData.append('client_secret', this.clientSecret);
-                formData.append('grant_type', 'authorization_code');
-                formData.append('redirect_uri', this.redirectUri);
-                const state = sessionStorage.getState();
-                if (state) {
-                    formData.append('state', state);
-                }
-                const codeVerifier = sessionStorage.getCodeVerifier();
-                if (codeVerifier) {
-                    formData.append('code_verifier', codeVerifier);
-                }
-                fetch(this.tokenEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    body: formData
-                })
-                    .then((response) => response.json())
-                    .then(async (responseJson) => {
-                        if (responseJson.error) {
-                            reject(responseJson);
-                        }
-                        sessionStorage.setAccessToken(
-                            responseJson.access_token
-                        );
-                        this.updateAuthStatus(AuthStatus.AUTHENTICATED);
-                        resolve(responseJson);
-                    })
-                    .catch((err) => {
-                        reject(err.response.data);
-                        this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
-                    });
-            } catch (error) {
-                this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
-                reject(error);
+            const response = await fetch(this.tokenEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                body: formData
+            });
+
+            const dataResponse = await response.json();
+            if (dataResponse.error) {
+                reject(dataResponse);
+                return;
             }
+
+            this.saveUserDetails(dataResponse.id_token);
+            sessionStorage.setAccessToken(dataResponse.access_token);
+            sessionStorage.setIdToken(dataResponse.id_token);
+
+            const now = new Date().getTime();
+            const expiredAt = now + dataResponse.expires_in * 1000;
+            sessionStorage.setExpiredAt(expiredAt);
+
+            this.updateAuthStatus(AuthStatus.AUTHENTICATED);
+            resolve(dataResponse);
         });
     }
 
@@ -129,10 +147,15 @@ class KindeSDK {
      * instance of the class, a boolean value of true, and the string 'registration'
      * @returns A promise that resolves to void.
      */
-    register(): Promise<void> {
+    register(additionalParameters = {}): Promise<void> {
+        checkAdditionalParameters(additionalParameters);
         const auth = new AuthorizationCode();
         this.updateAuthStatus(AuthStatus.AUTHENTICATING);
-        return auth.login(this, true, 'registration');
+        return auth.login(this, true, 'registration', additionalParameters);
+    }
+
+    createOrg(additionalParameters = {}) {
+        return this.register({ is_create_org: true, additionalParameters });
     }
 
     /**
@@ -143,7 +166,7 @@ class KindeSDK {
         this.cleanUp();
         const URLParsed = Url(this.logoutEndpoint, true);
         URLParsed.query['redirect'] = this.logoutRedirectUri;
-        Linking.openURL(URLParsed.toString());
+        return Linking.openURL(URLParsed.toString());
     }
 
     /**
@@ -179,6 +202,129 @@ class KindeSDK {
             return true;
         }
         return false;
+    }
+
+    /**
+     * It returns the user profile from session storage
+     * @returns The user profile object.
+     */
+    getUserDetails() {
+        return sessionStorage.getUserProfile();
+    }
+
+    /**
+     * If the idToken is not a string or is empty, remove the userProfile from sessionStorage.
+     * Otherwise, decode the idToken and save the userProfile to sessionStorage
+     * @param {string} idToken - The idToken is a JWT token that contains information about the user.
+     * @returns The user profile is being returned.
+     */
+    saveUserDetails(idToken: string) {
+        if (!idToken || typeof idToken !== 'string') {
+            sessionStorage.removeItem('userProfile');
+            return;
+        }
+
+        const token = jwt_decode(idToken) as TokenID;
+        sessionStorage.setUserProfile({
+            id: token.sub,
+            given_name: token.given_name,
+            family_name: token.family_name,
+            email: token.email
+        });
+    }
+
+    /**
+     * It returns the claims of the token stored in sessionStorage
+     * @param {TokenType} [tokenType=accessToken] - The type of token to get the claims from.
+     * @returns The claims of the token.
+     */
+    getClaims(tokenType: TokenType = 'accessToken'): Record<string, any> {
+        if (!['accessToken', 'id_token'].includes(tokenType)) {
+            throw new UnexpectedException('tokenType');
+        }
+
+        const token = sessionStorage.getItem(tokenType);
+        if (!token) {
+            throw new UnAuthenticatedException();
+        }
+
+        return jwt_decode(token);
+    }
+
+    /**
+     * It returns the value of the claim with the given key name from the claims object of the given
+     * token type
+     * @param {string} keyName - The name of the claim you want to get.
+     * @param {TokenType} [tokenType=accessToken] - This is the type of token you want to get the
+     * claims from. It can be either 'accessToken' or 'idToken'.
+     * @returns The value of the claim with the given key name.
+     */
+    getClaim(keyName: string, tokenType: TokenType = 'accessToken') {
+        return this.getClaims(tokenType)[keyName];
+    }
+
+    /**
+     * It returns an object with the orgCode and permissions properties
+     * @returns The orgCode and permissions of the user.
+     */
+    getPermissions() {
+        const claims = this.getClaims();
+        return {
+            orgCode: claims['org_code'],
+            permissions: claims['permissions']
+        };
+    }
+
+    /**
+     * It returns an object with the orgCode and a boolean value indicating whether the user has the
+     * permission
+     * @param {string} permission - The permission you want to check for.
+     * @returns An object with two properties: orgCode and isGranted.
+     */
+    getPermission(permission: string) {
+        const allClaims = this.getClaims();
+        const permissions = allClaims['permissions'];
+        return {
+            orgCode: allClaims['org_code'],
+            isGranted: permissions?.includes(permission)
+        };
+    }
+
+    /**
+     * It returns an object with a single property, `orgCode`, which is set to the value of the
+     * `org_code` claim in the JWT
+     * @returns An object with the orgCode property set to the value of the org_code claim.
+     */
+    getOrganization() {
+        return {
+            orgCode: this.getClaim('org_code')
+        };
+    }
+
+    /**
+     * It returns an object with a property called orgCodes that contains the value of the org_codes
+     * claim from the id_token
+     * @returns The orgCodes claim from the id_token.
+     */
+    getUserOrganizations() {
+        return {
+            orgCodes: this.getClaim('org_codes', 'id_token')
+        };
+    }
+
+    /**
+     * If the user is unauthenticated, return false. Otherwise, return true if the current time is less
+     * than the time the user's session expires
+     * @returns A boolean value.
+     */
+    get isAuthenticated() {
+        if (this.checkIsUnAuthenticated()) {
+            return false;
+        }
+
+        const timeExpired = sessionStorage.getExpiredAt();
+        const now = new Date().getTime();
+        return timeExpired > now;
     }
 
     get authorizationEndpoint(): string {

@@ -1,3 +1,4 @@
+import { AdditionalParameters } from '../types/KindeSDK';
 /**
  * It generates a random string of a given length, and returns it
  * @param {number} [byteLength=32] - The number of bytes to generate. Defaults to 32.
@@ -20,3 +21,17 @@ export declare function generateChallenge(): {
  * @returns A function that takes two parameters and returns either the first parameter or an Error.
  */
 export declare function checkNotNull<T>(reference: T | undefined | null, name: string): T | Error;
+/**
+ * It checks if the additionalParameters object is valid
+ * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+ * @returns An object with the keys and values of the additionalParameters object.
+ */
+export declare const checkAdditionalParameters: (additionalParameters?: AdditionalParameters) => AdditionalParameters;
+/**
+ * It takes a target object and an additionalParameters object and adds the additionalParameters
+ * object's key/value pairs to the target object
+ * @param target - Record<string, string | undefined>
+ * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+ * @returns A function that takes two parameters, target and additionalParameters.
+ */
+export declare const addAdditionalParameters: (target: Record<string, string | undefined>, additionalParameters?: AdditionalParameters) => Record<string, string | undefined>;

@@ -1,3 +1,4 @@
+import { UserProfile } from '../../types/KindeSDK';
 import BaseStore from './Base';
 declare class Storage extends BaseStore {
     constructor();
@@ -9,6 +10,12 @@ declare class Storage extends BaseStore {
     setCodeVerifier(newCodeVerifier: string): void;
     getAuthStatus(): string | undefined;
     setAuthStatus(newAuthStatus: string): void;
+    getIdToken(): string | undefined;
+    setIdToken(newIdToken: string): void;
+    getExpiredAt(): number;
+    setExpiredAt(expiredAt: number): void;
+    getUserProfile(): UserProfile | null;
+    setUserProfile(newUserProfile: UserProfile): void;
     convertString(str: string | object): string;
 }
 declare const sessionStorage: Storage;

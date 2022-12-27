@@ -1,5 +1,9 @@
 import crypto, { LibWordArray } from 'crypto-js';
+import { InvalidTypeException } from '../common/exceptions/invalid-type.exception';
 import { PropertyRequiredException } from '../common/exceptions/property-required.exception';
+import { UnexpectedException } from '../common/exceptions/unexpected.exception';
+import { AdditionalParameters } from '../types/KindeSDK';
+import { AdditionalParametersAllow } from './constants';
 
 /**
  * It takes a string or a LibWordArray and returns a string
@@ -66,3 +70,64 @@ export function checkNotNull<T>(
     }
     return reference;
 }
+
+const getValueByKey = (obj: Record<string, any>, key: string) => obj[key];
+
+type AdditionalParametersKeys = keyof AdditionalParameters;
+
+/**
+ * It checks if the additionalParameters object is valid
+ * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+ * @returns An object with the keys and values of the additionalParameters object.
+ */
+export const checkAdditionalParameters = (
+    additionalParameters: AdditionalParameters = {}
+) => {
+    if (typeof additionalParameters !== 'object') {
+        throw new UnexpectedException('additionalParameters');
+    }
+    const keyExists = Object.keys(
+        additionalParameters
+    ) as AdditionalParametersKeys[];
+    if (keyExists.length) {
+        const keysAllow = Object.keys(
+            AdditionalParametersAllow
+        ) as AdditionalParametersKeys[];
+        for (const key of keyExists) {
+            if (!keysAllow.includes(key)) {
+                throw new UnexpectedException(key);
+            }
+            if (
+                typeof additionalParameters[key] !==
+                AdditionalParametersAllow[key]
+            ) {
+                throw new InvalidTypeException(
+                    key,
+                    getValueByKey(AdditionalParametersAllow, key)
+                );
+            }
+        }
+        return additionalParameters;
+    }
+    return {};
+};
+
+/**
+ * It takes a target object and an additionalParameters object and adds the additionalParameters
+ * object's key/value pairs to the target object
+ * @param target - Record<string, string | undefined>
+ * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+ * @returns A function that takes two parameters, target and additionalParameters.
+ */
+export const addAdditionalParameters = (
+    target: Record<string, string | undefined>,
+    additionalParameters: AdditionalParameters = {}
+) => {
+    const keyExists = Object.keys(additionalParameters);
+    if (keyExists.length) {
+        keyExists.forEach((key) => {
+            target[key] = getValueByKey(additionalParameters, key);
+        });
+    }
+    return target;
+};
