@@ -10,7 +10,8 @@ For more information, please visit [https://kinde.com/docs](https://kinde.com/do
 
 ## Support versions
 
-We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-0-5x](https://github.com/kinde-oss/react-native-sdk-0-5x)
+- React Native: We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-0-5x](https://github.com/kinde-oss/react-native-sdk-0-5x)
+- Expo
 
 ## Installing dependencies
 
@@ -67,6 +68,7 @@ KINDE_CLIENT_ID=your_kinde_client_id
 
 ### Configuration Deep link
 
+#### With React Native
 If your app was launched from an external url registered to your app you can access and handle it from any component you want with:
 
 ```javascript
@@ -90,7 +92,7 @@ useEffect(() => {
 }, []);
 ```
 
-#### iOS
+##### iOS
 
 On iOS, you'll need to link `RCTLinking` to your project by following the steps described here. If you also want to listen to incoming app links during your app's execution, you'll need to add the following lines to your `AppDelegate.m`
 
@@ -140,7 +142,7 @@ Please make sure you have configuration URL scheme in `Info.plist`, so app can b
 ...
 ```
 
-#### Android
+##### Android
 
 Open `AndroidManifest.xml` and update your scheme:
 
@@ -151,6 +153,31 @@ Open `AndroidManifest.xml` and update your scheme:
     <category android:name="android.intent.category.BROWSABLE" />
     <data android:scheme="myapp" android:host="your_kinde_issuer.kinde.com" />  // you can change it
 </intent-filter>
+```
+
+#### With Expo
+
+#### Linking to your app
+To link to your [development](https://docs.expo.dev/development/introduction/) build or standalone app, you need to specify a custom URL scheme for your app. You can register a scheme in your Expo config (**app.json**, **app.config.js**) by adding a string under the `scheme` key:
+
+```json
+{
+  "expo": {
+    "scheme": "myapp",
+    ...
+  }
+}
+```
+#### Linking to Expo Go
+[Expo Go](https://expo.dev/expo-go) uses the `exp://` scheme, however, if we link to `exp://` without any address afterward, it will open the app to the home screen.
+
+In development, your app will live at a url like `exp://127.0.0.1:19000`. When published, an experience will be hosted at a URL like ` exp://u.expo.dev/[project-id]?channel-name=[channel-name]&runtime-version=[runtime-version]`, where `u.expo.dev/[project-id]` is the hosted URL that Expo Go fetches from.
+**Note**: You also should update your callback url to both your app and Kinde:
+```javascript
+KINDE_ISSUER_URL=https://your_kinde_domain.kinde.com
+KINDE_POST_CALLBACK_URL=exp://your_machine_ip:your_machine_port // f.e: exp://127.0.0.1:19000
+KINDE_POST_LOGOUT_REDIRECT_URL=exp://your_machine_ip:your_machine_port // f.e: exp://127.0.0.1:19000
+KINDE_CLIENT_ID=your_kinde_client_id
 ```
 
 ### Integration your app
@@ -199,6 +226,7 @@ const handleSignIn = () => {
 ```
 
 ### Handle redirect
+#### With React Native
 
 Once your user is redirected back to your app from Kinde, using the `getToken` method to get token instance from Kinde
 
@@ -250,7 +278,35 @@ const handleCallback = async (url: string) => {
     }
 };
 ```
+#### With Expo
 
+You must install `expo-linking`. This provides utilities for your app to interact with other installed apps using deep links. It also provides helper methods for constructing and parsing deep links into your app. This module is an extension of the React Native [Linking](https://reactnative.dev/docs/linking.html) module.
+
+```javascript
+...
+import * as Linking from "expo-linking";
+...
+
+const client = new KindeSDK(
+  YOUR_KINDE_ISSUER,
+  YOUR_KINDE_REDIRECT_URI,
+  YOUR_KINDE_CLIENT_ID,
+  YOUR_KINDE_LOGOUT_REDIRECT_URI
+)
+
+const url = Linking.useURL();
+
+useEffect(() => {
+  if (url) {
+    handleCallback(url);
+  }
+}, [url]);
+
+const handleCallback = async (url) => {
+  const token = await client.getToken(url);
+  console.log('token here', token);
+}
+```
 ### Logout
 
 This is implemented in much the same way as logging in or registering. The Kinde SPA client comes with a logout method
