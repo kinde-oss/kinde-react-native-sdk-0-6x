@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  *
  */
-import { AdditionalParameters, TokenType } from '../types/KindeSDK';
+import { AdditionalParameters, TokenResponse, TokenType } from '../types/KindeSDK';
 import { AuthStatus } from './Enums/AuthStatus.enum';
 /**
  * The KindeSDK module.
@@ -46,12 +46,12 @@ declare class KindeSDK {
      */
     login(additionalParameters?: AdditionalParameters): Promise<void>;
     /**
-     * It takes a URL as a parameter, parses it, and then sends a POST request to the token endpoint
-     * with the code, client id, client secret, grant type, redirect URI, state, and code verifier
-     * @param {string} url - The URL that the user is redirected to after they have logged in.
-     * @returns A promise that resolves to the response from the token endpoint.
+     * It takes a URL as a parameter, parses it, and then uses the code from the URL to get an access
+     * token from the token endpoint
+     * @param {string} url - The URL that the user is redirected to after the authorization process.
+     * @returns A promise that resolves to a TokenResponse object.
      */
-    getToken(url: string): Promise<void>;
+    getToken(url: string): Promise<TokenResponse>;
     /**
      * The function calls the login function of the AuthorizationCode class, passing in the current
      * instance of the class, a boolean value of true, and the string 'registration'

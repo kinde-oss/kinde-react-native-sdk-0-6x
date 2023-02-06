@@ -1,10 +1,15 @@
 // @ts-nocheck
-const { KindeSDK, ApiClient, OAuthApi } = require(process.cwd() + '/src/index');
+const { KindeSDK, ApiClient, OAuthApi, AuthStatus } = require(process.cwd() +
+    '/src/index');
 import { Linking } from 'react-native';
 import Url from 'url-parse';
 import BaseStore from '../src/SDK/Storage/Base';
 
-BaseStore.prototype.getItem = jest.fn().mockReturnValue('random_value');
+BaseStore.prototype.getItem = jest
+    .fn()
+    .mockReturnValue(
+        '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16", "preferred_email": "usertesting@yopmail.com"}'
+    );
 BaseStore.prototype.setItem = jest.fn();
 
 global.fetch = jest.fn(() =>
@@ -12,9 +17,11 @@ global.fetch = jest.fn(() =>
         json: () =>
             Promise.resolve({
                 access_token: 'this_is_access_token',
+                refresh_token: 'this_is_refresh_token',
+                id_token: 'this_is_id_token',
                 scope: 'this_is_scope',
-                state: 'this_is_state',
-                token_type: 'this_is_token_type'
+                token_type: 'this_is_token_type',
+                expires_in: 86400 // 1 day
             })
     })
 );
@@ -46,6 +53,14 @@ const fakeUserProfile = {
     preferred_email: 'usertesting@yopmail.com'
 };
 
+const fakeUserDetail = {
+    id: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
+    given_name: 'test',
+    family_name: 'user',
+    email: 'usertesting@yopmail.com',
+    preferred_email: 'usertesting@yopmail.com'
+};
+
 const fakePayloadFromDecodeToken = {
     azp: 'test@live',
     iss: 'https://myhost.kinde.com',
@@ -53,6 +68,8 @@ const fakePayloadFromDecodeToken = {
     org_codes: ['org_e5f28e1676d'],
     permissions: ['read:profile', 'read:email']
 };
+
+const getValueByKey = (obj: Record<string, any>, key: string) => obj[key];
 
 jest.mock('Linking', () => ({
     openURL: jest.fn(),
@@ -76,7 +93,15 @@ jest.mock(process.cwd() + '/src/SDK/Utils', () => ({
         return reference;
     }),
     checkAdditionalParameters: jest.fn(),
-    addAdditionalParameters: jest.fn()
+    addAdditionalParameters: jest.fn((target, additionalParameters) => {
+        const keyExists = Object.keys(additionalParameters);
+        if (keyExists.length) {
+            keyExists.forEach((key) => {
+                target[key] = getValueByKey(additionalParameters, key);
+            });
+        }
+        return target;
+    })
 }));
 
 jest.mock('jwt-decode', () =>
@@ -101,6 +126,7 @@ describe('KindeSDK', () => {
     });
     beforeEach(() => {
         fetch.mockClear();
+        jest.clearAllMocks();
     });
     describe('Initial', () => {
         test('throws an error when issuer is not passed', () => {
@@ -180,6 +206,67 @@ describe('KindeSDK', () => {
             URLParsed.query['redirect'] = configuration.logoutRedirectUri;
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
+        test('Create Organization', async () => {
+            await globalClient.createOrg();
+            const URLParsed = Url(configuration.authorizationEndpoint, true);
+            URLParsed.query['client_id'] = configuration.clientId;
+            URLParsed.query['redirect_uri'] = configuration.redirectUri;
+            URLParsed.query['client_secret'] = configuration.clientSecret;
+            URLParsed.query['grant_type'] = 'authorization_code';
+            URLParsed.query['scope'] = configuration.scope;
+            URLParsed.query['start_page'] = 'registration';
+            URLParsed.query['response_type'] = 'code';
+            URLParsed.query['state'] = configuration.fakeState;
+            URLParsed.query['is_create_org'] = true;
+            URLParsed.query['code_challenge'] = configuration.fakeCodeChallenge;
+            URLParsed.query['code_challenge_method'] = 'S256';
+            expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
+        });
+        test('Check isAuthenticated before login', async () => {
+            await globalClient.login();
+            expect(globalClient.isAuthenticated).toEqual(false);
+        });
+        test('Check isAuthenticated after login', async () => {
+            await globalClient.login();
+            await globalClient.getToken(
+                `${configuration.redirectUri}?code=random_code`
+            );
+            const timeExpired = new Date().getTime() + 1000 * 60 * 60; // 1 hour
+            BaseStore.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(timeExpired);
+
+            expect(globalClient.isAuthenticated).toEqual(true);
+        });
+        test('Check Auth Status Initial', async () => {
+            const client = new KindeSDK(
+                configuration.issuer,
+                configuration.redirectUri,
+                configuration.clientId,
+                configuration.logoutRedirectUri
+            );
+            expect(client.authStatus).toEqual('UNAUTHENTICATED');
+        });
+        test('Check Auth Status before login', async () => {
+            await globalClient.login();
+            expect(globalClient.authStatus).toEqual('AUTHENTICATING');
+        });
+        test('Check Auth Status after login', async () => {
+            await globalClient.login();
+            await globalClient.getToken(
+                `${configuration.redirectUri}?code=random_code`
+            );
+            const timeExpired = new Date().getTime() + 1000 * 60 * 60; // 1 hour
+            BaseStore.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(timeExpired);
+
+            expect(globalClient.authStatus).toEqual('AUTHENTICATED');
+        });
+        test('Check Auth Status after logout', async () => {
+            await globalClient.logout();
+            expect(globalClient.authStatus).toEqual('UNAUTHENTICATED');
+        });
     });
     describe('Token', () => {
         test('throws an error when url is not passed', async () => {
@@ -206,9 +293,11 @@ describe('KindeSDK', () => {
             );
             expect(token).toEqual({
                 access_token: 'this_is_access_token',
+                refresh_token: 'this_is_refresh_token',
+                id_token: 'this_is_id_token',
                 scope: 'this_is_scope',
-                state: 'this_is_state',
-                token_type: 'this_is_token_type'
+                token_type: 'this_is_token_type',
+                expires_in: 86400
             });
             expect(fetch).toHaveBeenCalledTimes(1);
         });
@@ -272,6 +361,14 @@ describe('KindeSDK', () => {
             expect(globalClient.getUserOrganizations()).toEqual({
                 orgCodes: fakePayloadFromDecodeToken.org_codes
             });
+        });
+        test('Get User Details', () => {
+            BaseStore.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(
+                    '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16", "preferred_email": "usertesting@yopmail.com"}'
+                );
+            expect(globalClient.getUserDetails()).toEqual(fakeUserDetail);
         });
     });
 });

@@ -10,14 +10,14 @@ For more information, please visit [https://kinde.com/docs](https://kinde.com/do
 
 ## Support versions
 
-- React Native: We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-0-5x](https://github.com/kinde-oss/react-native-sdk-0-5x)
-- Expo
+-   React Native: We support React Native versions 0.60 and higher. To use this package with older versions of React Native, please visit [react-native-sdk-0-5x](https://github.com/kinde-oss/react-native-sdk-0-5x)
+-   Expo
 
 ## Installing dependencies
 
 You will need Node, the React Native command line interface, a JDK, Android Studio (for Android) and Xcode (for iOS).
 
-Follow [the installation instructions for your chosen OS](https://archive.reactnative.dev/docs/0.50/getting-started) to install dependencies;
+Follow [the installation instructions for your chosen OS](https://reactnative.dev/docs/environment-setup) to install dependencies;
 
 ## Installation
 
@@ -27,6 +27,16 @@ The SDK can be installed with `npm` or `yarn` but we will use `npm` for code sam
 
 ```shell
 npm install @kinde-oss/react-native-sdk --save
+```
+
+For iOS, you need to updating iOS native dependencies by **CocoaPods**. We recommend installing **CocoaPods** using [Homebrew](https://brew.sh/)
+
+```shell
+# Install CocoaPods via brew
+brew install cocoapods
+
+# Install iOS native dependencies
+cd ios && pod install
 ```
 
 ## Getting Started
@@ -69,6 +79,7 @@ KINDE_CLIENT_ID=your_kinde_client_id
 ### Configuration Deep link
 
 #### With React Native
+
 If your app was launched from an external url registered to your app you can access and handle it from any component you want with:
 
 ```javascript
@@ -158,6 +169,7 @@ Open `AndroidManifest.xml` and update your scheme:
 #### With Expo
 
 #### Linking to your app
+
 To link to your [development](https://docs.expo.dev/development/introduction/) build or standalone app, you need to specify a custom URL scheme for your app. You can register a scheme in your Expo config (**app.json**, **app.config.js**) by adding a string under the `scheme` key:
 
 ```json
@@ -168,11 +180,14 @@ To link to your [development](https://docs.expo.dev/development/introduction/) b
   }
 }
 ```
+
 #### Linking to Expo Go
+
 [Expo Go](https://expo.dev/expo-go) uses the `exp://` scheme, however, if we link to `exp://` without any address afterward, it will open the app to the home screen.
 
 In development, your app will live at a url like `exp://127.0.0.1:19000`. When published, an experience will be hosted at a URL like ` exp://u.expo.dev/[project-id]?channel-name=[channel-name]&runtime-version=[runtime-version]`, where `u.expo.dev/[project-id]` is the hosted URL that Expo Go fetches from.
 **Note**: You also should update your callback url to both your app and Kinde:
+
 ```javascript
 KINDE_ISSUER_URL=https://your_kinde_domain.kinde.com
 KINDE_POST_CALLBACK_URL=exp://your_machine_ip:your_machine_port // f.e: exp://127.0.0.1:19000
@@ -226,6 +241,7 @@ const handleSignIn = () => {
 ```
 
 ### Handle redirect
+
 #### With React Native
 
 Once your user is redirected back to your app from Kinde, using the `getToken` method to get token instance from Kinde
@@ -278,6 +294,7 @@ const handleCallback = async (url: string) => {
     }
 };
 ```
+
 #### With Expo
 
 You must install `expo-linking`. This provides utilities for your app to interact with other installed apps using deep links. It also provides helper methods for constructing and parsing deep links into your app. This module is an extension of the React Native [Linking](https://reactnative.dev/docs/linking.html) module.
@@ -307,6 +324,7 @@ const handleCallback = async (url) => {
   console.log('token here', token);
 }
 ```
+
 ### Logout
 
 This is implemented in much the same way as logging in or registering. The Kinde SPA client comes with a logout method
@@ -536,19 +554,19 @@ _Note: Ensure you have already run `npm install` before_
 
 ## KindeSDK methods
 
-| Property             | Description                                                                                       | Arguments                        | Usage                                                                        | Sample output                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| login                | Constructs redirect url and sends user to Kinde to sign in                                        | org_code?: string                | kinde.login();                                                               |                                                                                      |
-| register             | Constructs redirect url and sends user to Kinde to sign up                                        | org_code?: string                | kinde.register();                                                            |                                                                                      |
-| logout               | Logs the user out of Kinde                                                                        |                                  | kinde.logout();                                                              |                                                                                      |
-| getToken             | Returns the raw Access token from URL after logged from Kinde                                     | url: string                      | kinde.getToken(url);                                                         | eyJhbGciOiJIUzI1...                                                                  |
-| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org_name?: string                | kinde.createOrg(); or kinde.createOrg({org_name: 'your organization name'}); | redirect                                                                             |
-| getClaim             | Gets a claim from an access or id token                                                           | claim: string, tokenKey?: string | kinde.getClaim('given_name', 'id_token');                                    | "David"                                                                              |
-| getPermission        | Returns the state of a given permission                                                           | key: string                      | kinde.getPermission('read:todos');                                           | {orgCode: "org_1234", isGranted: true}                                               |
-| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | kinde.getPermissions();                                                      | {orgCode: "org_1234", permissions: \["create:todos", "update:todos", "read:todos"\]} |
-| getOrganization      | Get details for the organization your user is logged into                                         |                                  | kinde.getOrganization();                                                     | {orgCode: "org_1234"}                                                                |
-| getUserDetails       | Returns the profile for the current user                                                          |                                  | kinde.getUserDetails();                                                      | {given_name: "Dave"; id: "abcdef"; family_name: "Smith"; email: "dave@smith.com"}    |
-| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                  | kinde.getUserOrganizations();                                                | {orgCodes: \["org_1234", "org_5678"\]}                                               |
+| Property             | Description                                                                                       | Arguments                        | Usage                                                                        | Sample output                                                                                                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| login                | Constructs redirect url and sends user to Kinde to sign in                                        | org_code?: string                | kinde.login();                                                               |                                                                                                                                                                                                                              |
+| register             | Constructs redirect url and sends user to Kinde to sign up                                        | org_code?: string                | kinde.register();                                                            |                                                                                                                                                                                                                              |
+| logout               | Logs the user out of Kinde                                                                        |                                  | kinde.logout();                                                              |                                                                                                                                                                                                                              |
+| getToken             | Returns the raw Access token from URL after logged from Kinde                                     | url: string                      | kinde.getToken(url);                                                         | {<br>"access_token": "eyJhbGciOiJSUzI...",<br>"expires_in": 86400,<br>"id_token": "eyJhbGciOiJSU...",<br>"refresh_token": "yXI1bFQKbXKLD7AIU...",<br>"scope": "openid profile email offline",<br>"token_type": "bearer"<br>} |
+| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org_name?: string                | kinde.createOrg(); or kinde.createOrg({org_name: 'your organization name'}); |                                                                                                                                                                                                                              |
+| getClaim             | Gets a claim from an access or id token                                                           | claim: string, tokenKey?: string | kinde.getClaim('given_name', 'id_token');                                    | "David"                                                                                                                                                                                                                      |
+| getPermission        | Returns the state of a given permission                                                           | key: string                      | kinde.getPermission('read:todos');                                           | {orgCode: "org_1234", isGranted: true}                                                                                                                                                                                       |
+| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | kinde.getPermissions();                                                      | {orgCode: "org_1234", permissions:"create:todos","update:todos","read:todos"}                                                                                                                                                |
+| getOrganization      | Get details for the organization your user is logged into                                         |                                  | kinde.getOrganization();                                                     | {orgCode: "org_1234"}                                                                                                                                                                                                        |
+| getUserDetails       | Returns the profile for the current user                                                          |                                  | kinde.getUserDetails();                                                      | [{given_name: "Dave"; id: "abcdef"; family_name: "Smith"; email:](mailto:%22dave@smith.com) ["dave@smith.com](mailto:%22dave@smith.com)"}                                                                                    |
+| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                  | kinde.getUserOrganizations();                                                | {orgCodes:"org1​234","org5​678"}                                                                                                                                                                                             |
 
 ## General tips
 
