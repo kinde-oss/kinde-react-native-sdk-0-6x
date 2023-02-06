@@ -16,7 +16,12 @@ import { Linking } from 'react-native';
 import Url from 'url-parse';
 import { UnAuthenticatedException } from '../common/exceptions/unauthenticated.exception';
 import { UnexpectedException } from '../common/exceptions/unexpected.exception';
-import { AdditionalParameters, TokenID, TokenType } from '../types/KindeSDK';
+import {
+    AdditionalParameters,
+    TokenID,
+    TokenResponse,
+    TokenType
+} from '../types/KindeSDK';
 import { AuthStatus } from './Enums/AuthStatus.enum';
 import AuthorizationCode from './OAuth/AuthorizationCode';
 import { sessionStorage } from './Storage';
@@ -98,12 +103,12 @@ class KindeSDK {
     }
 
     /**
-     * It takes a URL as a parameter, parses it, and then sends a POST request to the token endpoint
-     * with the code, client id, client secret, grant type, redirect URI, state, and code verifier
-     * @param {string} url - The URL that the user is redirected to after they have logged in.
-     * @returns A promise that resolves to the response from the token endpoint.
+     * It takes a URL as a parameter, parses it, and then uses the code from the URL to get an access
+     * token from the token endpoint
+     * @param {string} url - The URL that the user is redirected to after the authorization process.
+     * @returns A promise that resolves to a TokenResponse object.
      */
-    getToken(url: string): Promise<void> {
+    getToken(url: string): Promise<TokenResponse> {
         if (this.checkIsUnAuthenticated()) {
             throw new UnAuthenticatedException();
         }
@@ -174,7 +179,7 @@ class KindeSDK {
     }
 
     createOrg(additionalParameters = {}) {
-        return this.register({ is_create_org: true, additionalParameters });
+        return this.register({ is_create_org: true, ...additionalParameters });
     }
 
     /**
