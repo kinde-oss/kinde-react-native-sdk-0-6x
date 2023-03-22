@@ -5,8 +5,6 @@ export type AdditionalParameters = {
     org_name?: string;
 };
 
-export type TokenType = 'accessToken' | 'id_token';
-
 export type TokenID = {
     sub: string;
     given_name: string;
@@ -28,4 +26,22 @@ export type TokenResponse = {
     scope: string;
     token_type: string;
     expires_in: number;
+};
+
+export type AccessTokenDecoded = {
+    aud: string[];
+    azp: string;
+    exp: number;
+    iat: number;
+    iss: string;
+    jti: string;
+    gty?: string[];
+    scp?: string[];
+};
+
+export type IdTokenDecoded = {
+    sub: string;
+    given_name: string;
+    family_name: string;
+    email: string;
 };

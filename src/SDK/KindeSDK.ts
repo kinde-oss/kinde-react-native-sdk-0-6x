@@ -16,15 +16,10 @@ import { Linking } from 'react-native';
 import Url from 'url-parse';
 import { UnAuthenticatedException } from '../common/exceptions/unauthenticated.exception';
 import { UnexpectedException } from '../common/exceptions/unexpected.exception';
-import {
-    AdditionalParameters,
-    TokenID,
-    TokenResponse,
-    TokenType
-} from '../types/KindeSDK';
-import { AuthStatus } from './Enums/AuthStatus.enum';
+import { AdditionalParameters, TokenResponse } from '../types/KindeSDK';
+import { AuthStatus, TokenType } from './Enums';
 import AuthorizationCode from './OAuth/AuthorizationCode';
-import { sessionStorage } from './Storage';
+import { sessionStorage as Storage } from './Storage';
 import { checkAdditionalParameters, checkNotNull } from './Utils';
 
 /**
@@ -108,7 +103,22 @@ class KindeSDK {
      * @param {string} url - The URL that the user is redirected to after the authorization process.
      * @returns A promise that resolves to a TokenResponse object.
      */
-    getToken(url: string): Promise<TokenResponse> {
+    async getToken(url: string = ''): Promise<TokenResponse> {
+        // Checking for case token still valid
+        const token = await Storage.getToken();
+        if (token && !url) {
+            if (await this.isAuthenticated) {
+                return token;
+            }
+
+            const formData = new FormData();
+            formData.append('client_id', this.clientId);
+            formData.append('client_secret', this.clientSecret);
+            formData.append('grant_type', 'refresh_token');
+            formData.append('refresh_token', token.refresh_token);
+            return this.fetchToken(formData);
+        }
+
         if (this.checkIsUnAuthenticated()) {
             throw new UnAuthenticatedException();
         }
@@ -129,15 +139,19 @@ class KindeSDK {
         formData.append('grant_type', 'authorization_code');
         formData.append('redirect_uri', this.redirectUri);
 
-        const state = sessionStorage.getState();
+        const state = Storage.getState();
         if (state) {
             formData.append('state', state);
         }
-        const codeVerifier = sessionStorage.getCodeVerifier();
+        const codeVerifier = Storage.getCodeVerifier();
         if (codeVerifier) {
             formData.append('code_verifier', codeVerifier);
         }
 
+        return this.fetchToken(formData);
+    }
+
+    fetchToken(formData: FormData): Promise<TokenResponse> {
         return new Promise(async (resolve, reject) => {
             const response = await fetch(this.tokenEndpoint, {
                 method: 'POST',
@@ -153,14 +167,7 @@ class KindeSDK {
                 return;
             }
 
-            this.saveUserDetails(dataResponse.id_token);
-            sessionStorage.setAccessToken(dataResponse.access_token);
-            sessionStorage.setIdToken(dataResponse.id_token);
-
-            const now = new Date().getTime();
-            const expiredAt = now + dataResponse.expires_in * 1000;
-            sessionStorage.setExpiredAt(expiredAt);
-
+            await Storage.setToken(dataResponse);
             this.updateAuthStatus(AuthStatus.AUTHENTICATED);
             resolve(dataResponse);
         });
@@ -195,20 +202,20 @@ class KindeSDK {
 
     /**
      * It clears the session storage and sets the authentication status to unauthenticated
-     * @returns The sessionStorage.clear() method is being returned.
+     * @returns The Storage.clear() method is being returned.
      */
     cleanUp(): void {
         this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
-        return sessionStorage.clear();
+        return Storage.clear();
     }
 
     /**
-     * It updates the authStatus variable and then saves the new value to the sessionStorage
+     * It updates the authStatus variable and then saves the new value to the Storage
      * @param {AuthStatus} _authStatus - The new auth status to set.
      */
     updateAuthStatus(_authStatus: AuthStatus): void {
         this.authStatus = _authStatus;
-        sessionStorage.setAuthStatus(this.authStatus);
+        Storage.setAuthStatus(this.authStatus);
     }
 
     /**
@@ -216,7 +223,7 @@ class KindeSDK {
      * @returns A boolean value.
      */
     checkIsUnAuthenticated() {
-        const authStatusStorage = sessionStorage.getAuthStatus();
+        const authStatusStorage = Storage.getAuthStatus();
         if (
             (!this.authStatus ||
                 this.authStatus === AuthStatus.UNAUTHENTICATED) &&
@@ -232,42 +239,23 @@ class KindeSDK {
      * It returns the user profile from session storage
      * @returns The user profile object.
      */
-    getUserDetails() {
-        return sessionStorage.getUserProfile();
+    async getUserDetails() {
+        return Storage.getUserProfile();
     }
 
     /**
-     * If the idToken is not a string or is empty, remove the userProfile from sessionStorage.
-     * Otherwise, decode the idToken and save the userProfile to sessionStorage
-     * @param {string} idToken - The idToken is a JWT token that contains information about the user.
-     * @returns The user profile is being returned.
-     */
-    saveUserDetails(idToken: string) {
-        if (!idToken || typeof idToken !== 'string') {
-            sessionStorage.removeItem('userProfile');
-            return;
-        }
-
-        const token = jwt_decode(idToken) as TokenID;
-        sessionStorage.setUserProfile({
-            id: token.sub,
-            given_name: token.given_name,
-            family_name: token.family_name,
-            email: token.email
-        });
-    }
-
-    /**
-     * It returns the claims of the token stored in sessionStorage
+     * It returns the claims of the token stored in Storage
      * @param {TokenType} [tokenType=accessToken] - The type of token to get the claims from.
      * @returns The claims of the token.
      */
-    getClaims(tokenType: TokenType = 'accessToken'): Record<string, any> {
-        if (!['accessToken', 'id_token'].includes(tokenType)) {
+    async getClaims(
+        tokenType: TokenType = TokenType.ACCESS_TOKEN
+    ): Promise<Record<string, any>> {
+        if (![TokenType.ACCESS_TOKEN, TokenType.ID_TOKEN].includes(tokenType)) {
             throw new UnexpectedException('tokenType');
         }
 
-        const token = sessionStorage.getItem(tokenType);
+        const token = await Storage.getTokenType(tokenType);
         if (!token) {
             throw new UnAuthenticatedException();
         }
@@ -283,16 +271,20 @@ class KindeSDK {
      * claims from. It can be either 'accessToken' or 'idToken'.
      * @returns The value of the claim with the given key name.
      */
-    getClaim(keyName: string, tokenType: TokenType = 'accessToken') {
-        return this.getClaims(tokenType)[keyName];
+    async getClaim(
+        keyName: string,
+        tokenType: TokenType = TokenType.ACCESS_TOKEN
+    ) {
+        const claims = await this.getClaims(tokenType);
+        return claims[keyName];
     }
 
     /**
      * It returns an object with the orgCode and permissions properties
      * @returns The orgCode and permissions of the user.
      */
-    getPermissions() {
-        const claims = this.getClaims();
+    async getPermissions() {
+        const claims = await this.getClaims();
         return {
             orgCode: claims['org_code'],
             permissions: claims['permissions']
@@ -305,8 +297,8 @@ class KindeSDK {
      * @param {string} permission - The permission you want to check for.
      * @returns An object with two properties: orgCode and isGranted.
      */
-    getPermission(permission: string) {
-        const allClaims = this.getClaims();
+    async getPermission(permission: string) {
+        const allClaims = await this.getClaims();
         const permissions = allClaims['permissions'];
         return {
             orgCode: allClaims['org_code'],
@@ -319,9 +311,10 @@ class KindeSDK {
      * `org_code` claim in the JWT
      * @returns An object with the orgCode property set to the value of the org_code claim.
      */
-    getOrganization() {
+    async getOrganization() {
+        const orgCode = await this.getClaim('org_code');
         return {
-            orgCode: this.getClaim('org_code')
+            orgCode
         };
     }
 
@@ -330,9 +323,10 @@ class KindeSDK {
      * claim from the id_token
      * @returns The orgCodes claim from the id_token.
      */
-    getUserOrganizations() {
+    async getUserOrganizations() {
+        const orgCodes = await this.getClaim('org_codes', TokenType.ID_TOKEN);
         return {
-            orgCodes: this.getClaim('org_codes', 'id_token')
+            orgCodes
         };
     }
 
@@ -342,13 +336,11 @@ class KindeSDK {
      * @returns A boolean value.
      */
     get isAuthenticated() {
-        if (this.checkIsUnAuthenticated()) {
-            return false;
-        }
-
-        const timeExpired = sessionStorage.getExpiredAt();
-        const now = new Date().getTime();
-        return timeExpired > now;
+        return (async () => {
+            const timeExpired = await Storage.getExpiredAt();
+            const now = new Date().getTime();
+            return timeExpired * 1000 > now;
+        })();
     }
 
     get authorizationEndpoint(): string {
