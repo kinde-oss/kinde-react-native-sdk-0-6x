@@ -193,8 +193,8 @@ class KindeSDK {
      * It cleans up the local storage, and then opens a URL that will log the user out of the identity
      * provider
      */
-    logout() {
-        this.cleanUp();
+    async logout() {
+        await this.cleanUp();
         const URLParsed = Url(this.logoutEndpoint, true);
         URLParsed.query['redirect'] = this.logoutRedirectUri;
         return Linking.openURL(URLParsed.toString());
@@ -204,9 +204,9 @@ class KindeSDK {
      * It clears the session storage and sets the authentication status to unauthenticated
      * @returns The Storage.clear() method is being returned.
      */
-    cleanUp(): void {
+    async cleanUp() {
         this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
-        return Storage.clear();
+        return Storage.clearAll();
     }
 
     /**
