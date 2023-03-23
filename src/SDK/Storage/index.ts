@@ -19,7 +19,6 @@ import {
 } from '../../types/KindeSDK';
 import { TokenType } from '../Enums/TokenType.enum';
 import BaseStore from './Base';
-import KindeStorage from './KindeStorage';
 
 /**
  * The Storage SDK module.
@@ -28,20 +27,34 @@ import KindeStorage from './KindeStorage';
  */
 
 class Storage extends BaseStore {
-    protected readonly storage: KindeStorage;
-
     constructor() {
         super();
-        this.storage = new KindeStorage();
+    }
+
+    async getStorage() {
+        const useExpo = this.getItem('use_expo') === 'true';
+        const builder = !useExpo
+            ? await import('./RNStorage')
+            : await import('./ExpoStorage');
+        return new builder.default();
     }
 
     async getToken(): Promise<TokenResponse | null> {
-        const cred = await this.storage.getItem();
-        return cred ? JSON.parse(cred.password) : null;
+        const storage = await this.getStorage();
+        const cred = await storage.getItem();
+        if (typeof cred === 'object') {
+            // RNStorage (KeyChain)
+            return cred
+                ? JSON.parse((cred as { password: string }).password)
+                : null;
+        }
+        // Expo Secure Store
+        return cred ? JSON.parse(cred as string) : null;
     }
 
     async setToken(token: string) {
-        return this.storage.setItem(token);
+        const storage = await this.getStorage();
+        return storage.setItem(token);
     }
 
     async getTokenType(type: TokenType) {
@@ -93,7 +106,8 @@ class Storage extends BaseStore {
 
     async clearAll() {
         this.clear();
-        return this.storage.clear();
+        const storage = await this.getStorage();
+        return storage.clear();
     }
 
     async getUserProfile() {

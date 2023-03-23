@@ -76,6 +76,11 @@ class KindeSDK {
 
         this.clientSecret = '';
         this.authStatus = AuthStatus.UNAUTHENTICATED;
+
+        Storage.setItem(
+            'use_expo',
+            additionalParameters.useExpo === true ? 'true' : 'false'
+        );
     }
 
     /**

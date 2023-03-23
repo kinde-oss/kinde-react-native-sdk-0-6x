@@ -15,7 +15,7 @@
  * @module SDK/Storage
  * @version 1.1.0
  */
-export default class KindeStorage {
+export default class RNStorage {
     getItem(): Promise<false | {
         service: string;
         username: string;

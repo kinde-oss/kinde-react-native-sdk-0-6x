@@ -13,15 +13,14 @@
 import { TokenResponse } from '../../types/KindeSDK';
 import { TokenType } from '../Enums/TokenType.enum';
 import BaseStore from './Base';
-import KindeStorage from './KindeStorage';
 /**
  * The Storage SDK module.
  * @module SDK/Storage
  * @version 1.1.0
  */
 declare class Storage extends BaseStore {
-    protected readonly storage: KindeStorage;
     constructor();
+    getStorage(): Promise<import("./RNStorage").default | import("./ExpoStorage").default>;
     getToken(): Promise<TokenResponse | null>;
     setToken(token: string): Promise<boolean>;
     getTokenType(type: TokenType): Promise<string | null>;

@@ -19,7 +19,7 @@ import * as KeyChain from 'react-native-keychain';
  * @version 1.1.0
  */
 
-export default class KindeStorage {
+export default class RNStorage {
     async getItem() {
         return KeyChain.getGenericPassword();
     }
@@ -31,7 +31,7 @@ export default class KindeStorage {
         );
     }
 
-    clear() {
+    async clear() {
         return KeyChain.resetGenericPassword();
     }
 }
