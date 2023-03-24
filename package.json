@@ -39,7 +39,6 @@
         "expo-secure-store": "^12.1.1",
         "jwt-decode": "^3.1.2",
         "qs": "^6.11.0",
-        "react-native-keychain": "^3.0.0",
         "superagent": "^7.0.2",
         "url-parse": "^1.5.10"
     },
@@ -88,7 +87,7 @@
     },
     "peerDependencies": {
         "react-native": ">= 0.60",
-        "react-native-keychain": "*"
+        "expo-secure-store": "*"
     },
     "files": [
         "dist"

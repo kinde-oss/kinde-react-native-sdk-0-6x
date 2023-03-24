@@ -32,10 +32,7 @@ class Storage extends BaseStore {
     }
 
     async getStorage() {
-        const useExpo = this.getItem('use_expo') === 'true';
-        const builder = !useExpo
-            ? await import('./RNStorage')
-            : await import('./ExpoStorage');
+        const builder = await import('./ExpoStorage');
         return new builder.default();
     }
 

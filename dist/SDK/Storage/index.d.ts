@@ -20,7 +20,7 @@ import BaseStore from './Base';
  */
 declare class Storage extends BaseStore {
     constructor();
-    getStorage(): Promise<import("./RNStorage").default | import("./ExpoStorage").default>;
+    getStorage(): Promise<import("./ExpoStorage").default>;
     getToken(): Promise<TokenResponse | null>;
     setToken(token: string): Promise<boolean>;
     getTokenType(type: TokenType): Promise<string | null>;
