@@ -28,9 +28,11 @@ npm install @kinde-oss/react-native-sdk --save
 ```
 
 ### Android
+
 Checking `MainApplication.java` to verify the `react-native-keychain` was added. If not, you need to install manually:
 
-- Edit `android/settings.gradle`
+-   Edit `android/settings.gradle`
+
 ```java
 ...
 
@@ -39,7 +41,9 @@ project(':react-native-keychain').projectDir = new File(rootProject.projectDir, 
 
 ...
 ```
-- Edit `android/app/build.gradle`
+
+-   Edit `android/app/build.gradle`
+
 ```java
 apply plugin: 'com.android.application'
 
@@ -49,14 +53,15 @@ android {
 
 dependencies {
   ...
-  
+
   implementation project(':react-native-keychain')
-  
+
   ...
 }
 ```
 
-- Edit your `MainApplication.java`
+-   Edit your `MainApplication.java`
+
 ```java
 ...
 
@@ -100,24 +105,29 @@ cd ios && pod install
 ```
 
 If the `react-native-keychain` not linked, you need to install manually
+
 ##### Option: With CocoaPods (High recommended)
 
 Add the following to your `Podfile` and run pod update:
+
 ```Swift
 pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 ```
 
 ##### Option: Manually
-- Click to `Build Phases` tab
-- Choose `Link Binary With Libraries`
-- Click `+` in bottom
-- **Add Other...** => **Add Files...** => **node_modules/react-native-keychain/RNKeychain.xcodeproj**
-- Then, you need to add `libRNKeychain.a`
-- Clean and rebuild
+
+-   Click to `Build Phases` tab
+-   Choose `Link Binary With Libraries`
+-   Click `+` in bottom
+-   **Add Other...** => **Add Files...** => **node_modules/react-native-keychain/RNKeychain.xcodeproj**
+-   Then, you need to add `libRNKeychain.a`
+-   Clean and rebuild
 
 ##### Enable `Keychain Sharing` entitlement for iOS 10+
+
 For iOS 10 you'll need to enable the `Keychain Sharing` entitlement in the `Capabilities` section of your build target
 ![screenshot](./assets/image.png)
+
 ## Getting Started
 
 ### Kinde configuration
