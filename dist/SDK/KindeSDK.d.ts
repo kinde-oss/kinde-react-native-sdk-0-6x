@@ -70,7 +70,7 @@ declare class KindeSDK {
      * It clears the session storage and sets the authentication status to unauthenticated
      * @returns The Storage.clear() method is being returned.
      */
-    cleanUp(): void;
+    cleanUp(): Promise<boolean>;
     /**
      * It updates the authStatus variable and then saves the new value to the Storage
      * @param {AuthStatus} _authStatus - The new auth status to set.
