@@ -4,7 +4,7 @@ const { KindeSDK, ApiClient, OAuthApi, AuthStatus } = require(process.cwd() +
 import { Linking } from 'react-native';
 import Url from 'url-parse';
 import BaseStore from '../src/SDK/Storage/Base';
-import KindeStorage from '../src/SDK/Storage/KindeStorage';
+import ExpoStorage from '../src/SDK/Storage/ExpoStorage';
 
 BaseStore.prototype.getItem = jest
     .fn()
@@ -22,11 +22,11 @@ const fakeTokenResponse = {
     expires_in: 86400 // 1 day
 };
 
-KindeStorage.prototype.getItem = jest
+ExpoStorage.prototype.getItem = jest
     .fn()
     .mockReturnValue({ password: JSON.stringify(fakeTokenResponse) });
 
-KindeStorage.prototype.setItem = jest.fn();
+ExpoStorage.prototype.setItem = jest.fn();
 
 global.fetch = jest.fn(() =>
     Promise.resolve({
@@ -38,11 +38,11 @@ function FormDataMock() {
     this.append = jest.fn();
 }
 
-jest.mock('react-native-keychain', () => {
+jest.mock('expo-secure-store', () => {
     return {
-        setGenericPassword: jest.fn().mockResolvedValue(),
-        getGenericPassword: jest.fn().mockResolvedValue(),
-        resetGenericPassword: jest.fn().mockResolvedValue()
+        setItemAsync: jest.fn().mockResolvedValue(),
+        getItemAsync: jest.fn().mockResolvedValue(),
+        deleteItemAsync: jest.fn().mockResolvedValue()
     };
 });
 
