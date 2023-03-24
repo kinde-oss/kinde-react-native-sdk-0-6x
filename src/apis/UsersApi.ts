@@ -173,4 +173,4 @@ export const GetUsersSortEnum = {
     EmailDesc: 'email_desc'
 } as const;
 export type GetUsersSortEnum =
-    typeof GetUsersSortEnum[keyof typeof GetUsersSortEnum];
+    (typeof GetUsersSortEnum)[keyof typeof GetUsersSortEnum];
