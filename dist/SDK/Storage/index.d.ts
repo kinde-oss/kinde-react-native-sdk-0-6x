@@ -10,37 +10,29 @@
  * Do not edit the class manually.
  *
  */
-import { TokenResponse } from '../../types/KindeSDK';
-import { TokenType } from '../Enums/TokenType.enum';
+import { UserProfile } from '../../types/KindeSDK';
 import BaseStore from './Base';
-import KindeStorage from './KindeStorage';
 /**
  * The Storage SDK module.
  * @module SDK/Storage
  * @version 1.1.0
  */
 declare class Storage extends BaseStore {
-    protected readonly storage: KindeStorage;
     constructor();
-    getToken(): Promise<TokenResponse | null>;
-    setToken(token: string): Promise<boolean>;
-    getTokenType(type: TokenType): Promise<string | null>;
-    getAccessToken(): Promise<string | null>;
-    getIdToken(): Promise<string | null>;
-    getExpiredAt(): Promise<number>;
+    getAccessToken(): string | undefined;
+    setAccessToken(newAccessToken: string): void;
     getState(): string | undefined;
     setState(newState: string): void;
     getCodeVerifier(): string | undefined;
     setCodeVerifier(newCodeVerifier: string): void;
     getAuthStatus(): string | undefined;
     setAuthStatus(newAuthStatus: string): void;
-    clearAll(): Promise<boolean>;
-    getUserProfile(): Promise<{
-        id: string;
-        given_name: string;
-        family_name: string;
-        email: string;
-    }>;
+    getIdToken(): string | undefined;
+    setIdToken(newIdToken: string): void;
+    getExpiredAt(): number;
+    setExpiredAt(expiredAt: number): void;
+    getUserProfile(): UserProfile | null;
+    setUserProfile(newUserProfile: UserProfile): void;
     convertString(str: string | object): string;
 }
 declare const sessionStorage: Storage;

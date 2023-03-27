@@ -11,15 +11,8 @@
  *
  */
 
-import jwtDecode from 'jwt-decode';
-import {
-    AccessTokenDecoded,
-    IdTokenDecoded,
-    TokenResponse
-} from '../../types/KindeSDK';
-import { TokenType } from '../Enums/TokenType.enum';
+import { UserProfile } from '../../types/KindeSDK';
 import BaseStore from './Base';
-import KindeStorage from './KindeStorage';
 
 /**
  * The Storage SDK module.
@@ -28,43 +21,18 @@ import KindeStorage from './KindeStorage';
  */
 
 class Storage extends BaseStore {
-    protected readonly storage: KindeStorage;
-
     constructor() {
         super();
-        this.storage = new KindeStorage();
+    }
+    getAccessToken(): string | undefined {
+        return this.getItem('accessToken');
     }
 
-    async getToken(): Promise<TokenResponse | null> {
-        const cred = await this.storage.getItem();
-        return cred ? JSON.parse(cred.password) : null;
+    setAccessToken(newAccessToken: string): void {
+        return this.setItem('accessToken', this.convertString(newAccessToken));
     }
 
-    async setToken(token: string) {
-        return this.storage.setItem(token);
-    }
-
-    async getTokenType(type: TokenType) {
-        const token = await this.getToken();
-        const newType =
-            type === TokenType.ID_TOKEN ? type : TokenType.ACCESS_TOKEN;
-        return token?.[newType] ?? null;
-    }
-
-    async getAccessToken() {
-        return this.getTokenType(TokenType.ACCESS_TOKEN);
-    }
-
-    async getIdToken(): Promise<string | null> {
-        return this.getTokenType(TokenType.ID_TOKEN);
-    }
-
-    async getExpiredAt() {
-        const token = await this.getAccessToken();
-        return token ? jwtDecode<AccessTokenDecoded>(token)['exp'] : 0;
-    }
-
-    getState() {
+    getState(): string | undefined {
         return this.getItem('state');
     }
 
@@ -72,7 +40,7 @@ class Storage extends BaseStore {
         return this.setItem('state', this.convertString(newState));
     }
 
-    getCodeVerifier() {
+    getCodeVerifier(): string | undefined {
         return this.getItem('codeVerifier');
     }
 
@@ -91,20 +59,31 @@ class Storage extends BaseStore {
         return this.setItem('authStatus', this.convertString(newAuthStatus));
     }
 
-    async clearAll() {
-        this.clear();
-        return this.storage.clear();
+    getIdToken() {
+        return this.getItem('id_token');
     }
 
-    async getUserProfile() {
-        const token = await this.getIdToken();
-        const payload = (token ? jwtDecode(token) : {}) as IdTokenDecoded;
-        return {
-            id: payload['sub'] ?? '',
-            given_name: payload['given_name'] ?? '',
-            family_name: payload['family_name'] ?? '',
-            email: payload['email'] ?? ''
-        };
+    setIdToken(newIdToken: string) {
+        return this.setItem('id_token', this.convertString(newIdToken));
+    }
+
+    getExpiredAt() {
+        return Number(this.getItem('expired_at')) || 0;
+    }
+
+    setExpiredAt(expiredAt: number) {
+        return this.setItem('expired_at', String(expiredAt || 0));
+    }
+
+    getUserProfile(): UserProfile | null {
+        const userProfile = this.getItem('userProfile');
+        return userProfile && !['undefined', 'null'].includes(userProfile)
+            ? JSON.parse(userProfile)
+            : null;
+    }
+
+    setUserProfile(newUserProfile: UserProfile) {
+        return this.setItem('userProfile', this.convertString(newUserProfile));
     }
 
     convertString(str: string | object): string {
