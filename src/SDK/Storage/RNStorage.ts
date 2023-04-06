@@ -1,4 +1,5 @@
 //@ts-nocheck
+
 /**
  * Kinde Management API
  * Provides endpoints to manage your Kinde Businesses
@@ -20,7 +21,7 @@ import * as KeyChain from 'react-native-keychain';
  * @version 1.1.0
  */
 
-export default class KindeStorage {
+export default class RNStorage {
     async getItem() {
         return KeyChain.getGenericPassword();
     }

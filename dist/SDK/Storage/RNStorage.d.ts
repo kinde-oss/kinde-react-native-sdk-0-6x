@@ -16,7 +16,7 @@ import * as KeyChain from 'react-native-keychain';
  * @module SDK/Storage
  * @version 1.1.0
  */
-export default class KindeStorage {
+export default class RNStorage {
     getItem(): Promise<false | KeyChain.UserCredentials>;
     setItem<T>(value: T): Promise<false | KeyChain.Result>;
     clear(): Promise<boolean>;

@@ -1,4 +1,5 @@
 //@ts-nocheck
+
 /**
  * Kinde Management API
  * Provides endpoints to manage your Kinde Businesses
