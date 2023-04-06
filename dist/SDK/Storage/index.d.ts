@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  *
  */
+/// <reference types="react-native-keychain" />
 import { TokenResponse } from '../../types/KindeSDK';
 import { TokenType } from '../Enums/TokenType.enum';
 import BaseStore from './Base';
@@ -20,9 +21,9 @@ import BaseStore from './Base';
  */
 declare class Storage extends BaseStore {
     constructor();
-    getStorage(): Promise<import("./ExpoStorage").default>;
+    getStorage(): Promise<import("./ExpoStorage").default | import("./RNStorage").default>;
     getToken(): Promise<TokenResponse | null>;
-    setToken(token: string): Promise<boolean>;
+    setToken(token: string): Promise<boolean | import("react-native-keychain").Result>;
     getTokenType(type: TokenType): Promise<string | null>;
     getAccessToken(): Promise<string | null>;
     getIdToken(): Promise<string | null>;

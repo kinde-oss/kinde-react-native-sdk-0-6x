@@ -19,6 +19,7 @@ import {
 } from '../../types/KindeSDK';
 import { TokenType } from '../Enums/TokenType.enum';
 import BaseStore from './Base';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
 /**
  * The Storage SDK module.
@@ -32,7 +33,14 @@ class Storage extends BaseStore {
     }
 
     async getStorage() {
-        const builder = await import('./ExpoStorage');
+        const isExpoGo =
+            Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+        if (isExpoGo) {
+            const builder = await import('./ExpoStorage');
+            return new builder.default();
+        }
+        const builder = await import('./RNStorage');
         return new builder.default();
     }
 
