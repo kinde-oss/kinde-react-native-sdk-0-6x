@@ -21,15 +21,80 @@ Follow [the installation instructions for your chosen OS](https://reactnative.de
 
 ## Installation
 
-#### npm
-
 The SDK can be installed with `npm` or `yarn` but we will use `npm` for code samples.
 
 ```shell
 npm install @kinde-oss/react-native-sdk --save
 ```
 
-For iOS, you need to updating iOS native dependencies by **CocoaPods**. We recommend installing **CocoaPods** using [Homebrew](https://brew.sh/)
+### Android
+
+Checking `MainApplication.java` to verify the `react-native-keychain` was added. If not, you need to install manually:
+
+-   Edit `android/settings.gradle`
+
+```java
+...
+
+include ':react-native-keychain'
+project(':react-native-keychain').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-keychain/android')
+
+...
+```
+
+-   Edit `android/app/build.gradle`
+
+```java
+apply plugin: 'com.android.application'
+
+android {
+  ...
+}
+
+dependencies {
+  ...
+
+  implementation project(':react-native-keychain')
+
+  ...
+}
+```
+
+-   Edit your `MainApplication.java`
+
+```java
+...
+
+import com.oblador.keychain.KeychainPackage;
+
+...
+
+public class MainActivity extends extends ReactActivity {
+  ...
+  @Override
+  protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+              new MainReactPackage(),
+              new KeychainPackage()
+      );
+  }
+
+  // or
+  @Override
+  protected List<ReactPackage> getPackages() {
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    List<ReactPackage> packages = new PackageList(this).getPackages();
+    packages.add(new KeychainPackage());
+    return packages;
+  }
+  ...
+}
+...
+```
+
+#### iOS
+
+You need to updating iOS native dependencies by **CocoaPods**. We recommend installing **CocoaPods** using [Homebrew](https://brew.sh/)
 
 ```shell
 # Install CocoaPods via brew
@@ -38,6 +103,30 @@ brew install cocoapods
 # Install iOS native dependencies
 cd ios && pod install
 ```
+
+If the `react-native-keychain` not linked, you need to install manually
+
+##### Option: With CocoaPods (High recommended)
+
+Add the following to your `Podfile` and run pod update:
+
+```Swift
+pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
+```
+
+##### Option: Manually
+
+-   Click to `Build Phases` tab
+-   Choose `Link Binary With Libraries`
+-   Click `+` in bottom
+-   **Add Other...** => **Add Files...** => **node_modules/react-native-keychain/RNKeychain.xcodeproj**
+-   Then, you need to add `libRNKeychain.a`
+-   Clean and rebuild
+
+##### Enable `Keychain Sharing` entitlement for iOS 10+
+
+For iOS 10 you'll need to enable the `Keychain Sharing` entitlement in the `Capabilities` section of your build target
+![screenshot](./assets/image.png)
 
 ## Getting Started
 
