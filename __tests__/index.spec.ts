@@ -1,8 +1,8 @@
 // @ts-nocheck
+
 const { KindeSDK, ApiClient, OAuthApi } = require(process.cwd() + '/src/index');
 import jwtDecode from 'jwt-decode';
 import Url from 'url-parse';
-import BaseStore from '../src/SDK/Storage/Base';
 import RNStorage from '../src/SDK/Storage/RNStorage';
 import { Linking } from 'react-native';
 
@@ -124,9 +124,6 @@ const dataDecoded = {
 
 jest.mock('jwt-decode', () => jest.fn().mockReturnValue());
 
-const objUser =
-    '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16"}';
-
 let globalClient;
 describe('KindeSDK', () => {
     beforeEach(() => {
@@ -138,13 +135,6 @@ describe('KindeSDK', () => {
             configuration.clientId,
             configuration.logoutRedirectUri
         );
-
-        // BaseStore.prototype.getItem = jest.fn().mockReturnValue(objUser);
-
-        // RNStorage.prototype.getItem = jest
-        // .fn()
-        // .mockReturnValue({ password: JSON.stringify(fakeTokenResponse) });
-        BaseStore.prototype.setItem = jest.fn();
 
         RNStorage.prototype.getItem = jest
             .fn()

@@ -12,7 +12,7 @@
  */
 import KindeSDK from './SDK/KindeSDK';
 import * as Utils from './SDK/Utils';
-import { sessionStorage as Storage } from './SDK/Storage';
+import Storage from './SDK/Storage';
 import * as ApiClient from './ApiClient';
 /**
  * Kinde React Native SDK for authentication.<br>

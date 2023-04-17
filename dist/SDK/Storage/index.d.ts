@@ -42,4 +42,4 @@ declare class Storage extends BaseStore {
     convertString(str: string | object): string;
 }
 declare const sessionStorage: Storage;
-export { Storage, sessionStorage };
+export default sessionStorage;

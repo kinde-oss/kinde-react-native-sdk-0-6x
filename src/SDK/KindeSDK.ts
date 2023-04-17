@@ -23,7 +23,7 @@ import {
 } from '../types/KindeSDK';
 import { TokenType } from './Enums';
 import AuthorizationCode from './OAuth/AuthorizationCode';
-import { sessionStorage as Storage } from './Storage';
+import Storage from './Storage';
 import { checkAdditionalParameters, checkNotNull } from './Utils';
 
 /**

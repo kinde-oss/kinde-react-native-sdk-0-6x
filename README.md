@@ -597,9 +597,21 @@ await client.getUserOrganizations();
 
 ## Token Storage
 
-Once the user has successfully authenticated, you'll have a JWT and possibly a refresh token that should be stored securely.
+Once the user has successfully authenticated, you'll have a JWT and a refresh token and that has been stored securely.
+E.g., using the `getAccessToken` method of `the Storage` class to get an access token:
 
-Recommendations on secure token storage can be found [here](https://reactnative.dev/docs/security#storing-sensitive-info).
+```javascript
+...
+import Storage from '@kinde-oss/react-native-sdk'
+...
+
+
+const accessToken = await Storage.getAccessToken();
+console.log('access_token', accessToken);
+```
+
+We're using the [react-native-keychain](https://www.npmjs.com/package/react-native-keychain) for `React Native` and the [expo-secure-store](https://www.npmjs.com/package/expo-secure-store) for `Expo`.
+More details at: [Storage class](./dist/SDK/Storage/index.d.ts)
 
 ## How to run test
 

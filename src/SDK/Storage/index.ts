@@ -126,4 +126,4 @@ class Storage extends BaseStore {
 const sessionStorage = (globalThis.sessionStorage =
     globalThis.sessionStorage ?? new Storage()) as Storage;
 
-export { Storage, sessionStorage };
+export default sessionStorage;
