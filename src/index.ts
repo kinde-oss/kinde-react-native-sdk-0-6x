@@ -14,7 +14,6 @@
 import KindeSDK from './SDK/KindeSDK';
 import * as Utils from './SDK/Utils';
 import { sessionStorage as Storage } from './SDK/Storage';
-import * as AuthStatus from './SDK/Enums/AuthStatus.enum';
 
 import * as ApiClient from './ApiClient';
 
@@ -73,13 +72,7 @@ export {
      * The Storage SDK module.
      * @property {module:SDK/Storage}
      */
-    Storage,
-
-    /**
-     * The AuthStatus SDK module.
-     * @property {module:SDK/Enums/AuthStatus}
-     */
-    AuthStatus
+    Storage
 };
 
 export * from './apis';

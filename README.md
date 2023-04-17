@@ -358,30 +358,12 @@ useEffect(() => {
 }, []);
 ```
 
-You can also get the current authentication status with `AuthStatus`:
+Also, use `isAuthenticated` from the SDK to determine whether the user is authenticated or not:
 
 ```javascript
-...
-import {..., AuthStatus ,...} from '@kinde-oss/react-native-sdk';
-...
-
-const handleCallback = async (url: string) => {
-  if (client.authStatus !== AuthStatus.UNAUTHENTICATED) {
-    const token = await client.getToken(url);
-    console.log('token here', token);
-  }
-};
-```
-
-Or simply use `isAuthenticated` from the SDK to determine whether the user is authenticated or not:
-
-```javascript
-const handleCallback = async (url: string) => {
-    if (client.isAuthenticated) {
-        const token = await client.getToken(url);
-        console.log('token here', token);
-    }
-};
+if (await client.isAuthenticated) {
+    // TODO
+}
 ```
 
 #### With Expo
@@ -471,17 +453,17 @@ const permissions = [
 We provide helper functions to more easily access permissions:
 
 ```javascript
-client.getPermission('create:todos');
+await client.getPermission('create:todos');
 // {orgCode: "org_1234", isGranted: true}
 
-client.getPermissions();
+await client.getPermissions();
 // {orgCode: "org_1234", permissions: ["create:todos", "update:todos", "read:todos"]}
 ```
 
 A practical example in code might look something like:
 
 ```
-if (client.getPermission("create:todos").isGranted) {
+if (await client.getPermission("create:todos").isGranted) {
     // show Create Todo button in UI
 }
 ```
@@ -533,10 +515,10 @@ const client = new KindeSDK(
 We have provided a helper to grab any claim from your id or access tokens. The helper defaults to access tokens:
 
 ```javascript
-client.getClaim('aud');
+await client.getClaim('aud');
 // ["api.yourapp.com"]
 
-client.getClaim('given_name', 'id_token');
+await client.getClaim('given_name', 'id_token');
 // "David"
 ```
 
@@ -606,10 +588,10 @@ The `id_token` will also contain an array of Organizations that a user belongs t
 There are two helper functions you can use to extract information:
 
 ```javascript
-client.getOrganization();
+await client.getOrganization();
 // {orgCode: "org_1234"}
 
-client.getUserOrganizations();
+await client.getUserOrganizations();
 // {orgCodes: ["org_1234", "org_abcd"]}
 ```
 
@@ -676,7 +658,8 @@ Assume your project path is `<StarterKit_PATH>`.
 1. Clean cache:
 
 ```bash
-cd <StarterKit_PATH>/android./gradlew clean
+cd <StarterKit_PATH>/android
+./gradlew clean
 ```
 
 2. Follow the steps in the above `General tips`.
@@ -687,7 +670,8 @@ cd <StarterKit_PATH>/android./gradlew clean
 2. Clean cache:
 
 ```bash
-cd <StarterKit_PATH>/rm -rf Pods && rm -rd Podfile.lock
+cd <StarterKit_PATH>
+rm -rf Pods && rm -rd Podfile.lock
 ```
 
 3. Clean build folders on Xcode.

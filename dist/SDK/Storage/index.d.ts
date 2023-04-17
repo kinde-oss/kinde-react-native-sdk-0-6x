@@ -32,8 +32,6 @@ declare class Storage extends BaseStore {
     setState(newState: string): void;
     getCodeVerifier(): string | undefined;
     setCodeVerifier(newCodeVerifier: string): void;
-    getAuthStatus(): string | undefined;
-    setAuthStatus(newAuthStatus: string): void;
     clearAll(): Promise<boolean>;
     getUserProfile(): Promise<{
         id: string;

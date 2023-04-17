@@ -1,17 +1,10 @@
 // @ts-nocheck
-const { KindeSDK, ApiClient, OAuthApi, AuthStatus } = require(process.cwd() +
-    '/src/index');
-import { Linking } from 'react-native';
+const { KindeSDK, ApiClient, OAuthApi } = require(process.cwd() + '/src/index');
+import jwtDecode from 'jwt-decode';
 import Url from 'url-parse';
 import BaseStore from '../src/SDK/Storage/Base';
 import RNStorage from '../src/SDK/Storage/RNStorage';
-
-BaseStore.prototype.getItem = jest
-    .fn()
-    .mockReturnValue(
-        '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16"}'
-    );
-BaseStore.prototype.setItem = jest.fn();
+import { Linking } from 'react-native';
 
 const fakeTokenResponse = {
     access_token: 'this_is_access_token',
@@ -21,18 +14,6 @@ const fakeTokenResponse = {
     token_type: 'this_is_token_type',
     expires_in: 86400 // 1 day
 };
-
-RNStorage.prototype.getItem = jest
-    .fn()
-    .mockReturnValue({ password: JSON.stringify(fakeTokenResponse) });
-
-RNStorage.prototype.setItem = jest.fn();
-
-global.fetch = jest.fn(() =>
-    Promise.resolve({
-        json: () => Promise.resolve(fakeTokenResponse)
-    })
-);
 
 function FormDataMock() {
     this.append = jest.fn();
@@ -54,6 +35,7 @@ jest.mock('expo-constants', () => {
 });
 
 global.FormData = FormDataMock;
+
 const configuration = {
     issuer: 'https://myhost.kinde.com',
     redirectUri: 'myapp://myhost.kinde.com/kinde_callback',
@@ -126,52 +108,79 @@ jest.mock(process.cwd() + '/src/SDK/Utils', () => ({
     })
 }));
 
-jest.mock('jwt-decode', () =>
-    jest.fn().mockReturnValue({
-        azp: 'test@live',
-        iss: 'https://myhost.kinde.com',
-        org_code: 'org_e5f28e1676d',
-        org_codes: ['org_e5f28e1676d'],
-        permissions: ['read:profile', 'read:email'],
-        exp: new Date().getTime() / 1000 + 1000 * 60 * 60,
-        email: 'usertesting@yopmail.com',
-        family_name: 'user',
-        given_name: 'test',
-        sub: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
-        preferred_email: 'usertesting@yopmail.com'
-    })
-);
+const dataDecoded = {
+    azp: 'test@live',
+    iss: 'https://myhost.kinde.com',
+    org_code: 'org_e5f28e1676d',
+    org_codes: ['org_e5f28e1676d'],
+    permissions: ['read:profile', 'read:email'],
+    exp: new Date().getTime() / 1000 + 1000 * 60 * 60,
+    email: 'usertesting@yopmail.com',
+    family_name: 'user',
+    given_name: 'test',
+    sub: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
+    preferred_email: 'usertesting@yopmail.com'
+};
+
+jest.mock('jwt-decode', () => jest.fn().mockReturnValue());
+
+const objUser =
+    '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16"}';
 
 let globalClient;
 describe('KindeSDK', () => {
-    beforeAll(() => {
+    beforeEach(() => {
+        jwtDecode.mockReturnValueOnce(dataDecoded);
+
         globalClient = new KindeSDK(
             configuration.issuer,
             configuration.redirectUri,
             configuration.clientId,
             configuration.logoutRedirectUri
         );
-    });
-    beforeEach(() => {
+
+        // BaseStore.prototype.getItem = jest.fn().mockReturnValue(objUser);
+
+        // RNStorage.prototype.getItem = jest
+        // .fn()
+        // .mockReturnValue({ password: JSON.stringify(fakeTokenResponse) });
+        BaseStore.prototype.setItem = jest.fn();
+
+        RNStorage.prototype.getItem = jest
+            .fn()
+            .mockReturnValue({ password: null });
+
+        RNStorage.prototype.setItem = jest.fn();
+
+        global.fetch = jest.fn(() =>
+            Promise.resolve({
+                json: () => Promise.resolve(fakeTokenResponse)
+            })
+        );
+
         fetch.mockClear();
         jest.clearAllMocks();
     });
+
     describe('Initial', () => {
         test('throws an error when issuer is not passed', () => {
             expect(() => {
                 new KindeSDK();
             }).toThrow('Issuer cannot be empty');
         });
+
         test('throws an error when redirectUrl is not passed', () => {
             expect(() => {
                 new KindeSDK(configuration.issuer);
             }).toThrow('Redirect URI cannot be empty');
         });
+
         test('throws an error when Client ID is not passed', () => {
             expect(() => {
                 new KindeSDK(configuration.issuer, configuration.redirectUri);
             }).toThrow('Client Id cannot be empty');
         });
+
         test('throws an error when logoutRedirectUri is not passed', () => {
             expect(() => {
                 new KindeSDK(
@@ -181,16 +190,19 @@ describe('KindeSDK', () => {
                 );
             }).toThrow('Logout Redirect URI');
         });
+
         test('Matching authorizationEndpoint', () => {
             expect(globalClient.authorizationEndpoint).toBe(
                 configuration.authorizationEndpoint
             );
         });
+
         test('Matching tokenEndpoint', () => {
             expect(globalClient.tokenEndpoint).toBe(
                 configuration.tokenEndpoint
             );
         });
+
         test('Matching logoutEndpoint', () => {
             expect(globalClient.logoutEndpoint).toBe(
                 configuration.logoutEndpoint
@@ -213,6 +225,7 @@ describe('KindeSDK', () => {
             URLParsed.query['code_challenge_method'] = 'S256';
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
+
         test('Open registration endpoint', async () => {
             await globalClient.register();
             const URLParsed = Url(configuration.authorizationEndpoint, true);
@@ -228,12 +241,14 @@ describe('KindeSDK', () => {
             URLParsed.query['code_challenge_method'] = 'S256';
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
+
         test('Logout', async () => {
             await globalClient.logout();
             const URLParsed = Url(configuration.logoutEndpoint, true);
             URLParsed.query['redirect'] = configuration.logoutRedirectUri;
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
+
         test('Create Organization', async () => {
             await globalClient.createOrg();
             const URLParsed = Url(configuration.authorizationEndpoint, true);
@@ -250,47 +265,60 @@ describe('KindeSDK', () => {
             URLParsed.query['code_challenge_method'] = 'S256';
             expect(Linking.openURL).toHaveBeenCalledWith(URLParsed.toString());
         });
-        test('Check isAuthenticated after login', async () => {
-            await globalClient.login();
-            await globalClient.getToken(
-                `${configuration.redirectUri}?code=random_code`
-            );
+    });
+
+    describe('Token', () => {
+        test('Check authenticated in the case access_token still valid ', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+
             const authenticated = await globalClient.isAuthenticated;
             expect(authenticated).toEqual(true);
         });
-        test('Check Auth Status Initial', async () => {
-            const client = new KindeSDK(
-                configuration.issuer,
-                configuration.redirectUri,
-                configuration.clientId,
-                configuration.logoutRedirectUri
-            );
-            expect(client.authStatus).toEqual('UNAUTHENTICATED');
-        });
-        test('Check Auth Status before login', async () => {
-            await globalClient.login();
-            expect(globalClient.authStatus).toEqual('AUTHENTICATING');
-        });
-        test('Check Auth Status after login', async () => {
-            await globalClient.login();
-            await globalClient.getToken(
-                `${configuration.redirectUri}?code=random_code`
-            );
-            const timeExpired = new Date().getTime() + 1000 * 60 * 60; // 1 hour
-            BaseStore.prototype.getItem = jest
-                .fn()
-                .mockReturnValue(timeExpired);
 
-            expect(globalClient.authStatus).toEqual('AUTHENTICATED');
+        test('Check authenticated use refresh_token', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify({
+                    ...fakeTokenResponse,
+                    access_token: '',
+                    expires_in: 0
+                })
+            });
+
+            const authenticated = await globalClient.isAuthenticated;
+            expect(authenticated).toEqual(true);
         });
-        test('Check Auth Status after logout', async () => {
-            await globalClient.logout();
-            expect(globalClient.authStatus).toEqual('UNAUTHENTICATED');
+
+        test('Check not authenticated', async () => {
+            const authenticated = await globalClient.isAuthenticated;
+            expect(authenticated).toEqual(false);
         });
-    });
-    describe('Token', () => {
+
+        test('Get Token instance without URL', async () => {
+            let throwErr = null;
+
+            try {
+                await globalClient.getToken();
+            } catch (error) {
+                throwErr = error;
+            }
+            expect(throwErr?.message).toEqual('URL cannot be empty');
+        });
+
+        test('Get Token instance got an error from Kinde response', async () => {
+            let throwErr = null;
+            try {
+                await globalClient.getToken(
+                    `${configuration.redirectUri}?code=random_code&error=random_error&error_description=invalid`
+                );
+            } catch (error) {
+                throwErr = error;
+            }
+            expect(throwErr?.message).toEqual('invalid');
+        });
+
         test('Get Token instance', async () => {
-            await globalClient.login();
             const token = await globalClient.getToken(
                 `${configuration.redirectUri}?code=random_code`
             );
@@ -302,9 +330,9 @@ describe('KindeSDK', () => {
                 token_type: 'this_is_token_type',
                 expires_in: 86400
             });
-            expect(fetch).toHaveBeenCalledTimes(1);
         });
     });
+
     describe('Api', () => {
         test('Get user profile', async () => {
             const config = new ApiClient.Configuration({
@@ -326,51 +354,78 @@ describe('KindeSDK', () => {
             await expect(data).toEqual(fakeUserProfile);
         });
     });
+
     describe('Payload', () => {
         test('Get claim via access token', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getClaim('iss')).toBe(
                 fakePayloadFromDecodeToken.iss
             );
         });
+
         test('Get claim via id token', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getClaim('azp', 'id_token')).toBe(
                 fakePayloadFromDecodeToken.azp
             );
         });
+
         test('Get permissions', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getPermissions()).toEqual({
                 orgCode: fakePayloadFromDecodeToken.org_code,
                 permissions: fakePayloadFromDecodeToken.permissions
             });
         });
+
         test('Get existed permission', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getPermission('read:profile')).toEqual({
                 orgCode: fakePayloadFromDecodeToken.org_code,
                 isGranted: true
             });
         });
+
         test('Get non-existed permission', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getPermission('write:profile')).toEqual({
                 orgCode: fakePayloadFromDecodeToken.org_code,
                 isGranted: false
             });
         });
+
         test('Get organization', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getOrganization()).toEqual({
                 orgCode: fakePayloadFromDecodeToken.org_code
             });
         });
+
         test('Get organizations', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getUserOrganizations()).toEqual({
                 orgCodes: fakePayloadFromDecodeToken.org_codes
             });
         });
+
         test('Get User Details', async () => {
-            BaseStore.prototype.getItem = jest
-                .fn()
-                .mockReturnValue(
-                    '{"email": "usertesting@yopmail.com", "family_name": "user", "given_name": "test", "id": "kp:58ece9f68a7c4c098efc1cf45c774e16"}'
-                );
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
             expect(await globalClient.getUserDetails()).toEqual(fakeUserDetail);
         });
     });

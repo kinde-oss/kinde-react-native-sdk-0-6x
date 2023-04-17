@@ -18,7 +18,7 @@ class AuthorizationCode {
      * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
      * @returns A promise that resolves when the URL is opened.
      */
-    login(
+    authenticate(
         kindSDK: KindeSDK,
         usePKCE: boolean = false,
         startPage: 'login' | 'registration' = 'login',
