@@ -104,9 +104,10 @@ brew install cocoapods
 cd ios && pod install
 ```
 
+##### React Native
 If the `react-native-keychain` not linked, you need to install manually
 
-##### Option: With CocoaPods (High recommended)
+**With CocoaPods (High recommended)**
 
 Add the following to your `Podfile` and run pod update:
 
@@ -114,7 +115,7 @@ Add the following to your `Podfile` and run pod update:
 pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 ```
 
-##### Option: Manually
+**Manually**
 
 -   Click to `Build Phases` tab
 -   Choose `Link Binary With Libraries`
@@ -123,6 +124,13 @@ pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 -   Then, you need to add `libRNKeychain.a`
 -   Clean and rebuild
 
+##### [Expo] Installation in Bare React Native
+Run this below command to update the package to your npm dependencies:
+```bash
+expo install expo-secure-store
+// or
+npx expo install expo-secure-store
+```
 ##### Enable `Keychain Sharing` entitlement for iOS 10+
 
 For iOS 10 you'll need to enable the `Keychain Sharing` entitlement in the `Capabilities` section of your build target
@@ -611,7 +619,7 @@ console.log('access_token', accessToken);
 ```
 
 We're using the [react-native-keychain](https://www.npmjs.com/package/react-native-keychain) for `React Native` and the [expo-secure-store](https://www.npmjs.com/package/expo-secure-store) for `Expo`.
-More details at: [Storage class](./dist/SDK/Storage/index.d.ts)
+The storage handler can be found at: [Storage class](./dist/SDK/Storage/index.d.ts)
 
 ## How to run test
 
