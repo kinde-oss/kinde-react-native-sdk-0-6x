@@ -4,6 +4,8 @@ const { KindeSDK, ApiClient, OAuthApi } = require(process.cwd() + '/src/index');
 import jwtDecode from 'jwt-decode';
 import Url from 'url-parse';
 import RNStorage from '../src/SDK/Storage/RNStorage';
+import ExpoStorage from '../src/SDK/Storage/ExpoStorage';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Linking } from 'react-native';
 
 const fakeTokenResponse = {
@@ -30,7 +32,18 @@ jest.mock('react-native-keychain', () => {
 jest.mock('expo-constants', () => {
     return {
         executionEnvironment: 'test',
-        ExecutionEnvironment: jest.fn().mockResolvedValue()
+        ExecutionEnvironment: {
+            Bare: 'bare',
+            Standalone: 'standalone',
+            StoreClient: 'storeClient'
+        }
+    };
+});
+
+jest.mock('expo-secure-store', () => {
+    return {
+        getItemAsync: jest.fn().mockResolvedValue(),
+        setItemAsync: jest.fn().mockResolvedValue()
     };
 });
 
@@ -135,12 +148,19 @@ describe('KindeSDK', () => {
             configuration.clientId,
             configuration.logoutRedirectUri
         );
+        Constants.executionEnvironment = 'test';
 
         RNStorage.prototype.getItem = jest
             .fn()
             .mockReturnValue({ password: null });
 
         RNStorage.prototype.setItem = jest.fn();
+
+        ExpoStorage.prototype.getItem = jest
+            .fn()
+            .mockReturnValue({ password: null });
+
+        ExpoStorage.prototype.setItem = jest.fn();
 
         global.fetch = jest.fn(() =>
             Promise.resolve({
@@ -258,7 +278,7 @@ describe('KindeSDK', () => {
     });
 
     describe('Token', () => {
-        test('Check authenticated in the case access_token still valid ', async () => {
+        test('[RNStorage] Check authenticated in the case access_token still valid ', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -267,7 +287,18 @@ describe('KindeSDK', () => {
             expect(authenticated).toEqual(true);
         });
 
-        test('Check authenticated use refresh_token', async () => {
+        test('[ExpoStorage] Check authenticated in the case access_token still valid ', async () => {
+            Constants.executionEnvironment = 'storeClient';
+
+            ExpoStorage.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(JSON.stringify(fakeTokenResponse));
+
+            const authenticated = await globalClient.isAuthenticated;
+            expect(authenticated).toEqual(true);
+        });
+
+        test('RNStorage] Check authenticated use refresh_token', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify({
                     ...fakeTokenResponse,
@@ -275,6 +306,21 @@ describe('KindeSDK', () => {
                     expires_in: 0
                 })
             });
+
+            const authenticated = await globalClient.isAuthenticated;
+            expect(authenticated).toEqual(true);
+        });
+
+        test('[ExpoStorage] Check authenticated use refresh_token', async () => {
+            Constants.executionEnvironment = 'storeClient';
+
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue(
+                JSON.stringify({
+                    ...fakeTokenResponse,
+                    access_token: '',
+                    expires_in: 0
+                })
+            );
 
             const authenticated = await globalClient.isAuthenticated;
             expect(authenticated).toEqual(true);
@@ -321,6 +367,42 @@ describe('KindeSDK', () => {
                 expires_in: 86400
             });
         });
+
+        test('[RNStorage] Get Token instance when user is authenticated', async () => {
+            RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify({
+                    ...fakeTokenResponse
+                })
+            });
+            const token = await globalClient.getToken();
+            expect(token).toEqual({
+                access_token: 'this_is_access_token',
+                refresh_token: 'this_is_refresh_token',
+                id_token: 'this_is_id_token',
+                scope: 'this_is_scope',
+                token_type: 'this_is_token_type',
+                expires_in: 86400
+            });
+        });
+
+        test('[ExpoStorage] Get Token instance when user is authenticated', async () => {
+            Constants.executionEnvironment = 'storeClient';
+
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify({
+                    ...fakeTokenResponse
+                })
+            });
+            const token = await globalClient.getToken();
+            expect(token).toEqual({
+                access_token: 'this_is_access_token',
+                refresh_token: 'this_is_refresh_token',
+                id_token: 'this_is_id_token',
+                scope: 'this_is_scope',
+                token_type: 'this_is_token_type',
+                expires_in: 86400
+            });
+        });
     });
 
     describe('Api', () => {
@@ -346,7 +428,7 @@ describe('KindeSDK', () => {
     });
 
     describe('Payload', () => {
-        test('Get claim via access token', async () => {
+        test('[RNStorage] Get claim via access token', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -355,7 +437,18 @@ describe('KindeSDK', () => {
             );
         });
 
-        test('Get claim via id token', async () => {
+        test('[ExpoStorage] Get claim via access token', async () => {
+            Constants.executionEnvironment = 'storeClient';
+
+            ExpoStorage.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(JSON.stringify(fakeTokenResponse));
+            expect(await globalClient.getClaim('iss')).toBe(
+                fakePayloadFromDecodeToken.iss
+            );
+        });
+
+        test('[RNStorage] Get claim via id token', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -364,7 +457,17 @@ describe('KindeSDK', () => {
             );
         });
 
-        test('Get permissions', async () => {
+        test('[ExpoStorage] Get claim via id token', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest
+                .fn()
+                .mockReturnValue(JSON.stringify(fakeTokenResponse));
+            expect(await globalClient.getClaim('azp', 'id_token')).toBe(
+                fakePayloadFromDecodeToken.azp
+            );
+        });
+
+        test('[RNStorage] Get permissions', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -374,7 +477,18 @@ describe('KindeSDK', () => {
             });
         });
 
-        test('Get existed permission', async () => {
+        test('[ExpoStorage] Get permissions', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getPermissions()).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                permissions: fakePayloadFromDecodeToken.permissions
+            });
+        });
+
+        test('[RNStorage] Get existed permission', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -384,7 +498,18 @@ describe('KindeSDK', () => {
             });
         });
 
-        test('Get non-existed permission', async () => {
+        test('[ExpoStorage] Get existed permission', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getPermission('read:profile')).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                isGranted: true
+            });
+        });
+
+        test('[RNStorage] Get non-existed permission', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -394,7 +519,18 @@ describe('KindeSDK', () => {
             });
         });
 
-        test('Get organization', async () => {
+        test('[ExpoStorage] Get non-existed permission', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getPermission('write:profile')).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code,
+                isGranted: false
+            });
+        });
+
+        test('[RNStorage] Get organization', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -403,7 +539,17 @@ describe('KindeSDK', () => {
             });
         });
 
-        test('Get organizations', async () => {
+        test('[ExpoStorage] Get organization', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getOrganization()).toEqual({
+                orgCode: fakePayloadFromDecodeToken.org_code
+            });
+        });
+
+        test('[RNStorage] Get organizations', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
@@ -412,8 +558,26 @@ describe('KindeSDK', () => {
             });
         });
 
-        test('Get User Details', async () => {
+        test('[ExpoStorage] Get organizations', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getUserOrganizations()).toEqual({
+                orgCodes: fakePayloadFromDecodeToken.org_codes
+            });
+        });
+
+        test('[RNStorage] Get User Details', async () => {
             RNStorage.prototype.getItem = jest.fn().mockReturnValue({
+                password: JSON.stringify(fakeTokenResponse)
+            });
+            expect(await globalClient.getUserDetails()).toEqual(fakeUserDetail);
+        });
+
+        test('[ExpoStorage] Get User Details', async () => {
+            Constants.executionEnvironment = 'storeClient';
+            ExpoStorage.prototype.getItem = jest.fn().mockReturnValue({
                 password: JSON.stringify(fakeTokenResponse)
             });
             expect(await globalClient.getUserDetails()).toEqual(fakeUserDetail);

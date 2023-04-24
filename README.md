@@ -105,6 +105,7 @@ cd ios && pod install
 ```
 
 ##### React Native
+
 If the `react-native-keychain` not linked, you need to install manually
 
 **With CocoaPods (High recommended)**
@@ -125,12 +126,15 @@ pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 -   Clean and rebuild
 
 ##### [Expo] Installation in Bare React Native
+
 Run this below command to update the package to your npm dependencies:
+
 ```bash
 expo install expo-secure-store
 // or
 npx expo install expo-secure-store
 ```
+
 ##### Enable `Keychain Sharing` entitlement for iOS 10+
 
 For iOS 10 you'll need to enable the `Keychain Sharing` entitlement in the `Capabilities` section of your build target
@@ -339,42 +343,55 @@ const handleSignIn = () => {
 
 ### Handle redirect
 
-#### With React Native
+After the user logs in to Kinde, it will be redirected to your app via a deep link, which includes some information (e.g., code) as parameters, and then you need to call the `getToken` method to receive a token from Kinde. The SDK will store the token on the keychain. Now, the user will be authenticated without logging in again.
 
-Once your user is redirected back to your app from Kinde, using the `getToken` method to get token instance from Kinde
+##### Handle redirect with React Native
 
 ```javascript
+...
+import { Linking } from 'react-native';
+...
+
+//
 const handleCallback = async (url: string) => {
     const token = await client.getToken(url);
     console.log('token here', token);
 };
 
-useEffect(() => {
-    Linking.getInitialURL()
-        .then((url) => {
-            if (url) {
-                handleCallback(url);
-            }
-        })
-        .catch((err) => console.error('An error occurred', err));
+const checkAuthenticate = async () => {
+  if (await client.isAuthenticated) { // Using `isAuthenticated` to check if the user is authenticated or not
+    // Need to implement, e.g: call an api,etc... In this case, we will get a token:
+    const token = await client.getToken();
+    console.log('token here', token);
+  } else {
+    // Need to implement, e.g: redirect user to sign in or sign up screens,etc...
+  }
+}
 
-    Linking.addEventListener('url', (event) => {
-        if (event.url) {
-            handleCallback(event.url);
-        }
-    });
+useEffect(() => {
+  Linking.getInitialURL()
+    .then(url => {
+      if (url) {
+        return handleCallback(url);
+      }
+      checkAuthenticate();
+    })
+    .catch(err => console.error('An error occurred', err));
+
+  const onChangeURL = (event: {url: string}) => {
+    if (event.url) {
+      handleCallback(event.url);
+    }
+  };
+  Linking.addEventListener('url', onChangeURL);
+
+  return () => {
+    Linking.removeAllListeners('url');
+  };
 }, []);
 ```
 
-Also, use `isAuthenticated` from the SDK to determine whether the user is authenticated or not:
-
-```javascript
-if (await client.isAuthenticated) {
-    // TODO
-}
-```
-
-#### With Expo
+##### Handle redirect with Expo
 
 You must install `expo-linking`. This provides utilities for your app to interact with other installed apps using deep links. It also provides helper methods for constructing and parsing deep links into your app. This module is an extension of the React Native [Linking](https://reactnative.dev/docs/linking.html) module.
 
@@ -392,16 +409,30 @@ const client = new KindeSDK(
 
 const url = Linking.useURL();
 
-useEffect(() => {
-  if (url) {
-    handleCallback(url);
+const checkAuthenticate = async () => {
+  if (await client.isAuthenticated) { // Using `isAuthenticated` to check if the user is authenticated or not
+    // Need to implement, e.g: call an api,etc... In this case, we will get a token:
+    const token = await client.getToken();
+    console.log('token here', token);
+  } else {
+    // Need to implement, e.g: redirect user to sign in or sign up screens,etc...
   }
-}, [url]);
+}
+
+useEffect(() => {
+  checkAuthenticate();
+}, []);
 
 const handleCallback = async (url) => {
   const token = await client.getToken(url);
   console.log('token here', token);
 }
+
+useEffect(() => {
+  if (url) {
+    handleCallback(url);
+  }
+}, [url]);
 ```
 
 ### Logout
@@ -471,7 +502,7 @@ await client.getPermissions();
 A practical example in code might look something like:
 
 ```
-if (await client.getPermission("create:todos").isGranted) {
+if ((await client.getPermission("create:todos")).isGranted) {
     // show Create Todo button in UI
 }
 ```
@@ -690,8 +721,8 @@ cd <StarterKit_PATH>/android
 2. Clean cache:
 
 ```bash
-cd <StarterKit_PATH>
-rm -rf Pods && rm -rd Podfile.lock
+cd <StarterKit_PATH>/ios
+rm -rf Pods && rm Podfile.lock
 ```
 
 3. Clean build folders on Xcode.
@@ -703,7 +734,10 @@ If you need any assistance with getting Kinde connected reach out to us at suppo
 The simplest way to run the JavaScript test suite is by using the following command at the root of your React Native checkout:
 
 ```bash
-npm test
+npm run test
+
+// or
+yarn test
 ```
 
 ## Documentation for API Endpoints
