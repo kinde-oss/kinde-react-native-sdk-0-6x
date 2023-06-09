@@ -16,7 +16,7 @@ import BaseStore from './Base';
 /**
  * The Storage SDK module.
  * @module SDK/Storage
- * @version 1.1.0
+ * @version 1.1.1
  */
 declare class Storage extends BaseStore {
     constructor();

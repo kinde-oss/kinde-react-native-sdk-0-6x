@@ -14,7 +14,7 @@
 /**
  * The Enums SDK module.
  * @module SDK/Enums
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 export enum TokenType {

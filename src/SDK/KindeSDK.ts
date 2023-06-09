@@ -29,7 +29,7 @@ import { checkAdditionalParameters, checkNotNull } from './Utils';
 /**
  * The KindeSDK module.
  * @module SDK/KindeSDK
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 class KindeSDK {

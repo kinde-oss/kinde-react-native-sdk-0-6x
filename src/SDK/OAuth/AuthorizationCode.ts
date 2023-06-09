@@ -14,7 +14,7 @@
 /**
  * The Oauth SDK module.
  * @module SDK/Oauth
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 import { Linking } from 'react-native';

@@ -21,7 +21,7 @@ import { AdditionalParametersAllow } from './constants';
 /**
  * The Utils SDK module.
  * @module SDK/Utils
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 /**

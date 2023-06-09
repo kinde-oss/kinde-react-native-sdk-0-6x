@@ -13,7 +13,7 @@
 /**
  * The Oauth SDK module.
  * @module SDK/Oauth
- * @version 1.1.0
+ * @version 1.1.1
  */
 declare class BaseStore {
     private data;

@@ -25,7 +25,7 @@ import Constants, { ExecutionEnvironment } from 'expo-constants';
 /**
  * The Storage SDK module.
  * @module SDK/Storage
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 class Storage extends BaseStore {
