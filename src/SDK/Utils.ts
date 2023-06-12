@@ -17,11 +17,15 @@ import { PropertyRequiredException } from '../common/exceptions/property-require
 import { UnexpectedException } from '../common/exceptions/unexpected.exception';
 import { AdditionalParameters } from '../types/KindeSDK';
 import { AdditionalParametersAllow } from './constants';
+import InAppBrowser from 'react-native-inappbrowser-reborn';
+import KindeSDK from './KindeSDK';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
 
 /**
  * The Utils SDK module.
  * @module SDK/Utils
- * @version 1.1.1
+ * @version 1.1.0
  */
 
 /**
@@ -149,4 +153,46 @@ export const addAdditionalParameters = (
         });
     }
     return target;
+};
+
+export const isExpoGo =
+    Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+export const OpenWebInApp = async (url: string, kindeSDK: KindeSDK) => {
+    try {
+        const response = await openWebBrowser(url, kindeSDK.redirectUri);
+        if (response.type === 'success' && response.url) {
+            return kindeSDK.getToken(response.url);
+        }
+        console.error(
+            'Something wrong when trying to authenticating. Reason: ',
+            response.type
+        );
+        return null;
+    } catch (err) {
+        if (err instanceof Error) {
+            console.error(
+                'Something wrong when trying to authenticating. Reason: ',
+                err.message
+            );
+        }
+        return null;
+    }
+};
+
+export const openWebBrowser = async (url: string, redirectUri: string) => {
+    if (isExpoGo) {
+        return WebBrowser.openAuthSessionAsync(url, redirectUri);
+    }
+    if (InAppBrowser) {
+        if (await InAppBrowser.isAvailable()) {
+            return InAppBrowser.openAuth(url, redirectUri, {
+                ephemeralWebSession: false,
+                showTitle: false,
+                enableUrlBarHiding: true,
+                enableDefaultShare: false
+            });
+        }
+    }
+    throw new Error('Not found web browser');
 };

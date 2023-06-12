@@ -11,12 +11,12 @@
  *
  */
 /// <reference types="react-native" />
-import { OrgAdditionalParams, AdditionalParameters, TokenResponse } from '../types/KindeSDK';
+import { AdditionalParameters, OrgAdditionalParams, TokenResponse } from '../types/KindeSDK';
 import { TokenType } from './Enums';
 /**
  * The KindeSDK module.
  * @module SDK/KindeSDK
- * @version 1.1.1
+ * @version 1.1.0
  */
 declare class KindeSDK {
     issuer: string;
@@ -44,7 +44,7 @@ declare class KindeSDK {
      * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
      * @returns A promise that resolves to void.
      */
-    login(additionalParameters?: Omit<OrgAdditionalParams, 'is_create_org'>): Promise<void>;
+    login(additionalParameters?: Omit<OrgAdditionalParams, 'is_create_org'>): Promise<TokenResponse | null>;
     /**
      * This function registers an organization with additional parameters and authenticates it using an
      * authorization code.
@@ -54,18 +54,18 @@ declare class KindeSDK {
      * depending on the specific implementation of the registration process.
      * @returns A Promise that resolves to void.
      */
-    register(additionalParameters?: OrgAdditionalParams): Promise<void>;
+    register(additionalParameters?: OrgAdditionalParams): Promise<TokenResponse | null>;
     /**
      * This function creates an organization with additional parameters.
      * @param additionalParameters
      * @returns A promise that resolves to void.
      */
-    createOrg(additionalParameters?: Omit<OrgAdditionalParams, 'is_create_org'>): Promise<void>;
+    createOrg(additionalParameters?: Omit<OrgAdditionalParams, 'is_create_org'>): Promise<TokenResponse | null>;
     /**
      * It cleans up the local storage, and then opens a URL that will log the user out of the identity
      * provider
      */
-    logout(): Promise<any>;
+    logout(): Promise<boolean>;
     /**
      * This function retrieves a token from a given URL using authorization code grant type and checks
      * for validity before doing so.
