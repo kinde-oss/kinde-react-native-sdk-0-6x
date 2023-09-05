@@ -21,6 +21,7 @@ import InAppBrowser from 'react-native-inappbrowser-reborn';
 import KindeSDK from './KindeSDK';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
+import { AuthBrowserOptions } from '../types/Auth';
 
 /**
  * The Utils SDK module.
@@ -158,9 +159,17 @@ export const addAdditionalParameters = (
 export const isExpoGo =
     Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
-export const OpenWebInApp = async (url: string, kindeSDK: KindeSDK) => {
+export const OpenWebInApp = async (
+    url: string,
+    kindeSDK: KindeSDK,
+    options?: AuthBrowserOptions
+) => {
     try {
-        const response = await openWebBrowser(url, kindeSDK.redirectUri);
+        const response = await openWebBrowser(
+            url,
+            kindeSDK.redirectUri,
+            options || kindeSDK.authBrowserOptions
+        );
         if (response.type === 'success' && response.url) {
             return kindeSDK.getToken(response.url);
         }
@@ -180,7 +189,11 @@ export const OpenWebInApp = async (url: string, kindeSDK: KindeSDK) => {
     }
 };
 
-export const openWebBrowser = async (url: string, redirectUri: string) => {
+export const openWebBrowser = async (
+    url: string,
+    redirectUri: string,
+    options?: AuthBrowserOptions
+) => {
     if (isExpoGo) {
         return WebBrowser.openAuthSessionAsync(url, redirectUri);
     }
@@ -190,7 +203,8 @@ export const openWebBrowser = async (url: string, redirectUri: string) => {
                 ephemeralWebSession: false,
                 showTitle: false,
                 enableUrlBarHiding: true,
-                enableDefaultShare: false
+                enableDefaultShare: false,
+                ...options
             });
         }
     }
