@@ -12,6 +12,7 @@
  */
 import { AdditionalParameters, TokenResponse } from '../../types/KindeSDK';
 import KindeSDK from '../KindeSDK';
+import { AuthBrowserOptions } from '../../types/Auth';
 declare class AuthorizationCode {
     /**
      * It opens the login page in the browser.
@@ -21,6 +22,6 @@ declare class AuthorizationCode {
      * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
      * @returns A promise that resolves when the URL is opened.
      */
-    authenticate(kindeSDK: KindeSDK, usePKCE?: boolean, startPage?: 'login' | 'registration', additionalParameters?: AdditionalParameters): Promise<TokenResponse | null>;
+    authenticate(kindeSDK: KindeSDK, usePKCE?: boolean, startPage?: 'login' | 'registration', additionalParameters?: AdditionalParameters, options?: AuthBrowserOptions): Promise<TokenResponse | null>;
 }
 export default AuthorizationCode;

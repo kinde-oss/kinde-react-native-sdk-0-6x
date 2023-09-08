@@ -28,6 +28,7 @@ import {
     checkNotNull,
     openWebBrowser
 } from './Utils';
+import { AuthBrowserOptions } from '../types/Auth';
 
 /**
  * The KindeSDK module.
@@ -43,6 +44,7 @@ class KindeSDK {
     public scope: string;
     public clientSecret?: string;
     public additionalParameters: AdditionalParameters;
+    public authBrowserOptions?: AuthBrowserOptions;
 
     /**
      * The constructor function takes in a bunch of parameters and sets them to the class properties
@@ -54,6 +56,7 @@ class KindeSDK {
      * @param {string} [scope=openid profile email offline] - The scope of the authentication. This is
      * a space-separated list of scopes.
      * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+     * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      */
     constructor(
         issuer: string,
@@ -61,7 +64,8 @@ class KindeSDK {
         clientId: string,
         logoutRedirectUri: string,
         scope: string = 'openid profile email offline',
-        additionalParameters: Pick<AdditionalParameters, 'audience'> = {}
+        additionalParameters: Pick<AdditionalParameters, 'audience'> = {},
+        authBrowserOptions?: AuthBrowserOptions
     ) {
         this.issuer = issuer;
         checkNotNull(this.issuer, 'Issuer');
@@ -79,16 +83,20 @@ class KindeSDK {
             checkAdditionalParameters(additionalParameters);
 
         this.scope = scope;
+
+        this.authBrowserOptions = authBrowserOptions;
     }
 
     /**
      * The function takes an object as an argument, and if the object is empty, it will use the default
      * object
      * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+     * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A promise that resolves to void.
      */
     async login(
-        additionalParameters: Omit<OrgAdditionalParams, 'is_create_org'> = {}
+        additionalParameters: Omit<OrgAdditionalParams, 'is_create_org'> = {},
+        authBrowserOptions?: AuthBrowserOptions
     ): Promise<TokenResponse | null> {
         checkAdditionalParameters(additionalParameters);
         await this.cleanUp();
@@ -102,7 +110,8 @@ class KindeSDK {
             this,
             true,
             'login',
-            additionalParametersMerged
+            additionalParametersMerged,
+            authBrowserOptions
         );
     }
 
@@ -113,10 +122,12 @@ class KindeSDK {
      * parameter that can be passed to the `register` function. It is used to provide additional
      * parameters that may be required for the registration process. These parameters can vary
      * depending on the specific implementation of the registration process.
+     * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A Promise that resolves to void.
      */
     register(
-        additionalParameters: OrgAdditionalParams = {}
+        additionalParameters: OrgAdditionalParams = {},
+        authBrowserOptions?: AuthBrowserOptions
     ): Promise<TokenResponse | null> {
         checkAdditionalParameters(additionalParameters);
         const auth = new AuthorizationCode();
@@ -124,32 +135,40 @@ class KindeSDK {
             this,
             true,
             'registration',
-            additionalParameters
+            additionalParameters,
+            authBrowserOptions
         );
     }
 
     /**
      * This function creates an organization with additional parameters.
      * @param additionalParameters
+     * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A promise that resolves to void.
      */
     createOrg(
-        additionalParameters: Omit<OrgAdditionalParams, 'is_create_org'> = {}
+        additionalParameters: Omit<OrgAdditionalParams, 'is_create_org'> = {},
+        authBrowserOptions?: AuthBrowserOptions
     ) {
-        return this.register({ is_create_org: true, ...additionalParameters });
+        return this.register(
+            { is_create_org: true, ...additionalParameters },
+            authBrowserOptions
+        );
     }
 
     /**
      * It cleans up the local storage, and then opens a URL that will log the user out of the identity
      * provider
+     * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      */
-    async logout() {
+    async logout(authBrowserOptions?: AuthBrowserOptions) {
         await this.cleanUp();
         const URLParsed = Url(this.logoutEndpoint, true);
         URLParsed.query['redirect'] = this.logoutRedirectUri;
         const response = await openWebBrowser(
             URLParsed.toString(),
-            this.redirectUri
+            this.redirectUri,
+            authBrowserOptions || this.authBrowserOptions
         );
         return response.type === 'success';
     }
