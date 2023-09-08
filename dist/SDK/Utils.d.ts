@@ -52,6 +52,6 @@ export declare const checkAdditionalParameters: (additionalParameters?: Addition
  */
 export declare const addAdditionalParameters: (target: Record<string, string | undefined>, additionalParameters?: AdditionalParameters) => Record<string, string | undefined>;
 export declare const isExpoGo: boolean;
-export declare const OpenWebInApp: (url: string, kindeSDK: KindeSDK) => Promise<import("../types/KindeSDK").TokenResponse | null>;
-export declare const openWebBrowser: (url: string, redirectUri: string) => Promise<WebBrowser.WebBrowserRedirectResult | WebBrowser.WebBrowserResult | import("react-native-inappbrowser-reborn").BrowserResult>;
+export declare const OpenWebInApp: (url: string, kindeSDK: KindeSDK, options?: WebBrowser.AuthSessionOpenOptions | import("react-native-inappbrowser-reborn").InAppBrowseriOSOptions | import("react-native-inappbrowser-reborn").InAppBrowserAndroidOptions | undefined) => Promise<import("../types/KindeSDK").TokenResponse | null>;
+export declare const openWebBrowser: (url: string, redirectUri: string, options?: WebBrowser.AuthSessionOpenOptions | import("react-native-inappbrowser-reborn").InAppBrowseriOSOptions | import("react-native-inappbrowser-reborn").InAppBrowserAndroidOptions | undefined) => Promise<WebBrowser.WebBrowserRedirectResult | WebBrowser.WebBrowserResult | import("react-native-inappbrowser-reborn").BrowserResult>;
 export declare const convertObject2FormData: (obj: Record<string, any>) => FormData;
