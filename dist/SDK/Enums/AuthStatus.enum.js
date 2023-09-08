@@ -1,1 +1,0 @@
-Object.defineProperty(exports,"__esModule",{value:true});exports.AuthStatus=void 0;var AuthStatus;exports.AuthStatus=AuthStatus;(function(AuthStatus){AuthStatus["UNAUTHENTICATED"]="UNAUTHENTICATED";AuthStatus["AUTHENTICATING"]="AUTHENTICATING";AuthStatus["AUTHENTICATED"]="AUTHENTICATED";})(AuthStatus||(exports.AuthStatus=AuthStatus={}));
