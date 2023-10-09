@@ -181,13 +181,25 @@ const dataDecoded = {
     preferred_email: 'usertesting@yopmail.com'
 };
 
-jest.mock('jwt-decode', () => jest.fn().mockReturnValue());
+jest.mock('jwt-decode', () =>
+    jest.fn().mockReturnValue({
+        azp: 'test@live',
+        iss: 'https://myhost.kinde.com',
+        org_code: 'org_e5f28e1676d',
+        org_codes: ['org_e5f28e1676d'],
+        permissions: ['read:profile', 'read:email'],
+        exp: new Date().getTime() / 1000 + 1000 * 60 * 60,
+        email: 'usertesting@yopmail.com',
+        family_name: 'user',
+        given_name: 'test',
+        sub: 'kp:58ece9f68a7c4c098efc1cf45c774e16',
+        preferred_email: 'usertesting@yopmail.com'
+    })
+);
 
 let globalClient;
 describe('KindeSDK', () => {
     beforeEach(() => {
-        jwtDecode.mockReturnValueOnce(dataDecoded);
-
         globalClient = new KindeSDK(
             configuration.issuer,
             configuration.redirectUri,
