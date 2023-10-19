@@ -10,18 +10,14 @@
  * Do not edit the class manually.
  *
  */
+import * as KeyChain from 'react-native-keychain';
 /**
- * The Oauth SDK module.
- * @module SDK/Oauth
+ * The Storage SDK module.
+ * @module SDK/Storage
  * @version 1.2.0
  */
-declare class BaseStore {
-    private data;
-    constructor();
-    getItem(key: string): string | undefined;
-    get length(): number;
-    setItem(key: string, value: string): void;
-    removeItem(key: string): void;
-    clear(): void;
+export default class RNStorage {
+    getItem(): Promise<false | KeyChain.UserCredentials>;
+    setItem<T>(value: T): Promise<boolean>;
+    clear(): Promise<boolean>;
 }
-export default BaseStore;
