@@ -118,10 +118,8 @@ export const checkAdditionalParameters = (
             AdditionalParametersAllow
         ) as AdditionalParametersKeys[];
         for (const key of keyExists) {
-            if (!keysAllow.includes(key)) {
-                throw new UnexpectedException(key);
-            }
             if (
+                keysAllow.includes(key) &&
                 typeof additionalParameters[key] !==
                 AdditionalParametersAllow[key]
             ) {
