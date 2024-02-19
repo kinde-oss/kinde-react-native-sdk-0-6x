@@ -10,7 +10,6 @@
  * Do not edit the class manually.
  *
  */
-/// <reference types="react-native" />
 /// <reference types="react-native-inappbrowser-reborn" />
 import * as WebBrowser from 'expo-web-browser';
 import { AdditionalParameters } from '../types/KindeSDK';

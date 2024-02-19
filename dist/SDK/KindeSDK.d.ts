@@ -10,10 +10,9 @@
  * Do not edit the class manually.
  *
  */
-/// <reference types="react-native" />
 import * as runtime from '../ApiClient';
 import { AuthBrowserOptions } from '../types/Auth';
-import { AdditionalParameters, FeatureFlag, OptionalFlag, OrgAdditionalParams, TokenResponse } from '../types/KindeSDK';
+import { AdditionalParameters, FeatureFlag, LoginAdditionalParameters, OptionalFlag, OrgAdditionalParams, RegisterAdditionalParameters, TokenResponse } from '../types/KindeSDK';
 import { TokenType } from './Enums';
 /**
  * The KindeSDK module.
@@ -45,11 +44,11 @@ declare class KindeSDK extends runtime.BaseAPI {
     /**
      * The function takes an object as an argument, and if the object is empty, it will use the default
      * object
-     * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+     * @param {AdditionalParameters} additionalParameters - LoginAdditionalParameters = {}
      * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A promise that resolves to void.
      */
-    login(additionalParameters?: Omit<OrgAdditionalParams, 'is_create_org'>, authBrowserOptions?: AuthBrowserOptions): Promise<TokenResponse | null>;
+    login(additionalParameters?: LoginAdditionalParameters, authBrowserOptions?: AuthBrowserOptions): Promise<TokenResponse | null>;
     /**
      * This function registers an organization with additional parameters and authenticates it using an
      * authorization code.
@@ -60,7 +59,7 @@ declare class KindeSDK extends runtime.BaseAPI {
      * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A Promise that resolves to void.
      */
-    register(additionalParameters?: OrgAdditionalParams, authBrowserOptions?: AuthBrowserOptions): Promise<TokenResponse | null>;
+    register(additionalParameters?: RegisterAdditionalParameters, authBrowserOptions?: AuthBrowserOptions): Promise<TokenResponse | null>;
     /**
      * This function creates an organization with additional parameters.
      * @param additionalParameters

@@ -63,3 +63,9 @@ export declare type FeatureFlag = {
     v?: FeatureFlagValue;
     t?: FeatureFlagType;
 };
+export declare type LoginAdditionalParameters = Omit<OrgAdditionalParams, 'is_create_org'> & {
+    [key: string]: unknown;
+};
+export declare type RegisterAdditionalParameters = OrgAdditionalParams & {
+    [key: string]: unknown;
+};
