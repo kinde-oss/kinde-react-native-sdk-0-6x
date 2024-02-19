@@ -79,9 +79,9 @@ export type LoginAdditionalParameters = Omit<
     OrgAdditionalParams,
     'is_create_org'
 > & {
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
 export type RegisterAdditionalParameters = OrgAdditionalParams & {
-    [key: string]: any;
+    [key: string]: unknown;
 };
