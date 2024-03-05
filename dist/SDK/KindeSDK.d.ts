@@ -10,7 +10,6 @@
  * Do not edit the class manually.
  *
  */
-/// <reference types="react-native" />
 import * as runtime from '../ApiClient';
 import { AuthBrowserOptions } from '../types/Auth';
 import { AdditionalParameters, FeatureFlag, OptionalFlag, OrgAdditionalParams, TokenResponse } from '../types/KindeSDK';
@@ -100,6 +99,13 @@ declare class KindeSDK extends runtime.BaseAPI {
      */
     useRefreshToken(token?: TokenResponse | null): Promise<TokenResponse>;
     /**
+     * This function refreshes the access token using the current refresh token
+     * in storage and updates the storage with new tokens.
+     * @returns A Promise that resolves to `TokenResponse` if attempted refresh
+     * succeeds or `null` in the event the attempted token refresh fails.
+     */
+    forceTokenRefresh(): Promise<TokenResponse | null>;
+    /**
      * This function fetches a token from a server using a POST request with form data and stores it in
      * local storage.
      * @param {FormData} formData - FormData object containing the data to be sent in the request body.
@@ -180,7 +186,7 @@ declare class KindeSDK extends runtime.BaseAPI {
      * specified flag as a number. If the flag is not found, it returns the `defaultValue` parameter
      * (if provided) as a number.
      */
-    getIntegerFlag(flagName: string, defaultValue?: number): Promise<string | number | boolean>;
+    getIntegerFlag(flagName: string, defaultValue?: number): Promise<import("../types/KindeSDK").FeatureFlagValue>;
     /**
      * This is an asynchronous function that retrieves a boolean flag value by name, with an optional
      * default value.
@@ -193,7 +199,7 @@ declare class KindeSDK extends runtime.BaseAPI {
      * argument to indicate that the flag value should be interpreted as a boolean. The `await` keyword
      * is used to wait for the `getFlag` method to complete before accessing the `value` property
      */
-    getBooleanFlag(flagName: string, defaultValue?: boolean): Promise<string | number | boolean>;
+    getBooleanFlag(flagName: string, defaultValue?: boolean): Promise<import("../types/KindeSDK").FeatureFlagValue>;
     /**
      * This is an asynchronous function that retrieves a string flag value with an optional default
      * value.
@@ -208,7 +214,7 @@ declare class KindeSDK extends runtime.BaseAPI {
      * flag. If no flag value is found, it will return the `defaultValue` parameter passed to the
      * function.
      */
-    getStringFlag(flagName: string, defaultValue?: string): Promise<string | number | boolean>;
+    getStringFlag(flagName: string, defaultValue?: string): Promise<import("../types/KindeSDK").FeatureFlagValue>;
     /**
      * This function retrieves a feature flag and its value, with the option to provide a default value
      * and check its type.
@@ -228,7 +234,7 @@ declare class KindeSDK extends runtime.BaseAPI {
     getFlag(flagName: string, options?: OptionalFlag, flagType?: FeatureFlag['t']): Promise<{
         code: string;
         type: string;
-        value: string | number | boolean;
+        value: import("../types/KindeSDK").FeatureFlagValue;
         is_default: boolean;
     }>;
     /**
