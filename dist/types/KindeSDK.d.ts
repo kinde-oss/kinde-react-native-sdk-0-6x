@@ -15,21 +15,21 @@
  * @module SDK/Types
  * @version 1.2.0
  */
-export declare type AdditionalParameters = {
+export type AdditionalParameters = {
     audience?: string;
     is_create_org?: boolean;
     org_code?: string;
     org_name?: string;
 };
-export declare type OrgAdditionalParams = Omit<AdditionalParameters, 'audience'>;
-export declare type UserProfile = {
+export type OrgAdditionalParams = Omit<AdditionalParameters, 'audience'>;
+export type UserProfile = {
     id: string;
     given_name: string;
     family_name: string;
     email: string;
     picture: string;
 };
-export declare type TokenResponse = {
+export type TokenResponse = {
     access_token: string;
     refresh_token: string;
     id_token: string;
@@ -37,7 +37,7 @@ export declare type TokenResponse = {
     token_type: string;
     expires_in: number;
 };
-export declare type AccessTokenDecoded = {
+export type AccessTokenDecoded = {
     aud: string[];
     azp: string;
     exp: number;
@@ -47,25 +47,25 @@ export declare type AccessTokenDecoded = {
     gty?: string[];
     scp?: string[];
 } & Record<string, any>;
-export declare type IdTokenDecoded = {
+export type IdTokenDecoded = {
     sub: string;
     given_name: string;
     family_name: string;
     email: string;
     picture: string;
 } & Record<string, any>;
-export declare type OptionalFlag = {
+export type OptionalFlag = {
     defaultValue?: string | boolean | number;
 };
-export declare type FeatureFlagType = 's' | 'b' | 'i';
-export declare type FeatureFlagValue = string | boolean | number;
-export declare type FeatureFlag = {
+export type FeatureFlagType = 's' | 'b' | 'i';
+export type FeatureFlagValue = string | boolean | number;
+export type FeatureFlag = {
     v?: FeatureFlagValue;
     t?: FeatureFlagType;
 };
-export declare type LoginAdditionalParameters = Omit<OrgAdditionalParams, 'is_create_org'> & {
+export type LoginAdditionalParameters = Omit<OrgAdditionalParams, 'is_create_org'> & {
     [key: string]: unknown;
 };
-export declare type RegisterAdditionalParameters = OrgAdditionalParams & {
+export type RegisterAdditionalParameters = OrgAdditionalParams & {
     [key: string]: unknown;
 };

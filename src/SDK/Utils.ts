@@ -121,7 +121,7 @@ export const checkAdditionalParameters = (
             if (
                 keysAllow.includes(key) &&
                 typeof additionalParameters[key] !==
-                AdditionalParametersAllow[key]
+                    AdditionalParametersAllow[key]
             ) {
                 throw new InvalidTypeException(
                     key,
