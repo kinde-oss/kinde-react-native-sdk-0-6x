@@ -20,8 +20,10 @@ import { AuthBrowserOptions } from '../types/Auth';
 import {
     AdditionalParameters,
     FeatureFlag,
+    LoginAdditionalParameters,
     OptionalFlag,
     OrgAdditionalParams,
+    RegisterAdditionalParameters,
     TokenResponse
 } from '../types/KindeSDK';
 import { TokenType } from './Enums';
@@ -101,12 +103,12 @@ class KindeSDK extends runtime.BaseAPI {
     /**
      * The function takes an object as an argument, and if the object is empty, it will use the default
      * object
-     * @param {AdditionalParameters} additionalParameters - AdditionalParameters = {}
+     * @param {AdditionalParameters} additionalParameters - LoginAdditionalParameters = {}
      * @param {AuthBrowserOptions} [authBrowserOptions] - Authentication browser options.
      * @returns A promise that resolves to void.
      */
     async login(
-        additionalParameters: Omit<OrgAdditionalParams, 'is_create_org'> = {},
+        additionalParameters: LoginAdditionalParameters = {},
         authBrowserOptions?: AuthBrowserOptions
     ): Promise<TokenResponse | null> {
         checkAdditionalParameters(additionalParameters);
@@ -137,7 +139,7 @@ class KindeSDK extends runtime.BaseAPI {
      * @returns A Promise that resolves to void.
      */
     register(
-        additionalParameters: OrgAdditionalParams = {},
+        additionalParameters: RegisterAdditionalParameters = {},
         authBrowserOptions?: AuthBrowserOptions
     ): Promise<TokenResponse | null> {
         checkAdditionalParameters(additionalParameters);
