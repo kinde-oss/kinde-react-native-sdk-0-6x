@@ -1,8 +1,13 @@
 # Kinde React Native SDK 0.6x
 
+> [!WARNING]
+> **This SDK is deprecated and no longer maintained.**
+> Please migrate to the [Kinde React Native SDK 0.7x](https://github.com/kinde-oss/kinde-react-native-sdk-0-7x) (`@kinde-oss/react-native-sdk-0-7x`).
+> This repository is archived and read-only.
+
 The Kinde SDK for React Native SDK 0.6x.
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com) [![Kinde Docs](https://img.shields.io/badge/Kinde-Docs-eee?style=flat-square)](https://kinde.com/docs/developer-tools) [![Kinde Community](https://img.shields.io/badge/Kinde-Community-eee?style=flat-square)](https://thekindecommunity.slack.com)
+[![Kinde Docs](https://img.shields.io/badge/Kinde-Docs-eee?style=flat-square)](https://kinde.com/docs/developer-tools) [![Kinde Community](https://img.shields.io/badge/Kinde-Community-eee?style=flat-square)](https://thekindecommunity.slack.com)
 
 ## Development
 
